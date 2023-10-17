@@ -6,7 +6,7 @@
   "scripts": {
     "build:ts": "rm -rf ./dist && tsc",
     "update-idl": "cp ../market-contracts/target/types/market_contracts.ts src/idl",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --runInBand --forceExit --coverage --verbose"
   },
   "keywords": [
     "soundwork",
@@ -20,5 +20,11 @@
     "@project-serum/anchor": "^0.26.0",
     "@solana/spl-token": "^0.3.8",
     "@solana/web3.js": "^1.87.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "jest": "^29.7.0",
+    "jest-runner-tsc": "^1.6.0",
+    "ts-jest": "^29.1.1"
   }
 }

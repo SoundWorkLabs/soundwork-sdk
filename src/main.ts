@@ -218,14 +218,11 @@ export class SoundworkSDK {
     // --------------------------------------- trade methods. (buy / sell)
     /**
      * Buy an NFT Listed on the soundwork marketplace
-     * @param {PublicKey} ogOwner - public key  of user who put up NFT for listing.
-     * @param {PublicKey} buyerTokenAccount - The Token Account for the buyer. Created if it does not exist by our contract.
      * @param {PublicKey} mint - the mint address of the Listed NFT.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction which should be signed and send by provider.
      * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
      */
     public async buyListing(
-        // buyerTokenAccount: PublicKey,
         mint: PublicKey
     ): Promise<TransactionInstruction> {
         if (!this.provider.publicKey) {
