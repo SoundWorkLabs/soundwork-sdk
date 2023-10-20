@@ -1,8 +1,11 @@
 {
-  "name": "soundwork-sdk",
-  "version": "1.0.0",
+  "name": "@jimii/soundwork-sdk",
+  "version": "0.0.5",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/main.js",
+  "files" : [
+    "dist"
+  ],
   "scripts": {
     "build:ts": "rm -rf ./dist && tsc",
     "update-idl": "cp ../market-contracts/target/types/market_contracts.ts src/idl",
