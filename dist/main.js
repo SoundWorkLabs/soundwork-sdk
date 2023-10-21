@@ -24,11 +24,9 @@ const pda_1 = require("./pda");
  * @class
  */
 class SoundworkSDK {
-    constructor(cluster, provider) {
+    constructor(provider, connection) {
         this.provider = provider;
-        this.cluster = cluster;
-        this.endpoint = (0, web3_js_1.clusterApiUrl)(this.cluster);
-        this.connection = new web3_js_1.Connection(this.endpoint);
+        this.connection = connection;
         this.program = new anchor_1.Program(market_contracts_1.IDL, constants_1.SOUNDWORK_PROGRAM_ID, provider);
     }
     // --------------------------------------- fetchers

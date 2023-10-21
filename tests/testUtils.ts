@@ -18,11 +18,14 @@ export const userKeypair = Keypair.fromSecretKey(
 
 export const cluster = 'devnet' // ! change here
 
-export function setProvider(cluster: Cluster): Provider {
+let endpoint = clusterApiUrl("devnet");
+export const connection = new Connection(endpoint)
+
+export function setProvider(): Provider {
 	const wallet = new Wallet(userKeypair);
 
 	let provider = new AnchorProvider(
-		new Connection(clusterApiUrl(cluster)),
+		connection,
 		wallet,
 		AnchorProvider.defaultOptions()
 	);

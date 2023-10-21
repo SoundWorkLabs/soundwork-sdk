@@ -1,4 +1,4 @@
-import { Cluster, Connection, TransactionInstruction } from "@solana/web3.js";
+import { Connection, TransactionInstruction } from "@solana/web3.js";
 import { Provider, IdlAccounts } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { MarketContracts } from "./idl/market_contracts";
@@ -11,13 +11,9 @@ export declare class SoundworkSDK {
     private provider;
     /** Our anchor program helper */
     private program;
-    /** The cluster in which the connection endpoint belongs to */
-    readonly cluster: Cluster;
     /** The connection object from Solana's SDK */
     readonly connection: Connection;
-    /** URL to the full node JSON RPC endpoint */
-    readonly endpoint: string;
-    constructor(cluster: Cluster, provider: Provider);
+    constructor(provider: Provider, connection: Connection);
     /**
      * Fetch data about a listed NFT on the soundwork Marketplace
      * @param {PublicKey} mint - the mint address of the nft

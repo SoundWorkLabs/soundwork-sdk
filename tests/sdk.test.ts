@@ -2,14 +2,14 @@ import { Keypair, PublicKey, sendAndConfirmTransaction, Transaction } from "@sol
 import { SoundworkSDK } from "../src/main";
 
 // test utils
-import { cluster, setProvider, nftMint, userKeypair, sleep } from "./testUtils";
+import { setProvider, nftMint, userKeypair, sleep, connection } from "./testUtils";
 
 describe('SoundworSDK', () => {
     let soundworkSDK: SoundworkSDK;
-    let provider = setProvider(cluster);
+    let provider = setProvider();
 
     beforeAll(() => {
-        soundworkSDK = new SoundworkSDK(cluster, provider);
+        soundworkSDK = new SoundworkSDK(provider, connection);
     });
 
 

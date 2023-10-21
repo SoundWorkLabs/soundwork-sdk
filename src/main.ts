@@ -34,18 +34,12 @@ export class SoundworkSDK {
     private provider!: Provider;
     /** Our anchor program helper */
     private program: Program<MarketContracts>;
-    /** The cluster in which the connection endpoint belongs to */
-    public readonly cluster: Cluster;
     /** The connection object from Solana's SDK */
     public readonly connection: Connection;
-    /** URL to the full node JSON RPC endpoint */
-    public readonly endpoint: string;
 
-    constructor(cluster: Cluster, provider: Provider) {
+    constructor(provider: Provider, connection: Connection) {
         this.provider = provider;
-        this.cluster = cluster;
-        this.endpoint = clusterApiUrl(this.cluster);
-        this.connection = new Connection(this.endpoint);
+        this.connection = connection;
 
         this.program = new Program<MarketContracts>(
             soundworkIDL,
