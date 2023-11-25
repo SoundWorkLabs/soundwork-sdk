@@ -1,21 +1,21 @@
 import { Keypair, PublicKey, sendAndConfirmTransaction, Transaction } from "@solana/web3.js";
-import { SoundworkSDK } from "../src/main";
+import { SoundworkListSDK } from "../src/soundwork-list/main";
 
 // test utils
 import { setProvider, nftMint, userKeypair, buyerKeypair, sleep, connection } from "./testUtils";
 
 describe('SoundworSDK', () => {
-    let soundworkSDK: SoundworkSDK;
+    let listSDK: SoundworkListSDK;
     let provider = setProvider();
 
     beforeAll(() => {
-        soundworkSDK = new SoundworkSDK(provider, connection);
+        listSDK = new SoundworkListSDK(provider, connection);
     });
 
     // it("should fail fetching listed NFT data for an account that does not exist", async () => {
     //     try {
     //         let nonExistentMint = new PublicKey("DY73PC8Dmr2nYXmrMcJG4hxKhXTMSo5kKfG89iLjY1G8")
-    //         await soundworkSDK.fetchListedNftByMint(nonExistentMint);
+    //         await listSDK.fetchListedNftByMint(nonExistentMint);
 
     //         fail("Expected an error to be thrown, but it didn't.");
     //     } catch (error: any) {
@@ -26,7 +26,7 @@ describe('SoundworSDK', () => {
     // }, 60000);
 
     // it('should create a listing', async () => {
-    //     let ix = await soundworkSDK.createListing(nftMint, 10);
+    //     let ix = await listSDK.createListing(nftMint, 10);
     //     let tx = new Transaction().add(ix);
     //     let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
     //     expect(txSig).toBeDefined();
@@ -38,7 +38,7 @@ describe('SoundworSDK', () => {
 
     // it('should edit a listing', async () => {
     //     await sleep(4000); // Delay 
-    //     let ix = await soundworkSDK.editListing(nftMint, 20);
+    //     let ix = await listSDK.editListing(nftMint, 20);
     //     let tx = new Transaction().add(ix);
     //     let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
     //     expect(txSig).toBeDefined();
@@ -50,7 +50,7 @@ describe('SoundworSDK', () => {
     // it('buy a listed NFT and close listing data account', async () => {
     //     await sleep(4000); // Delay
     //     let nftMint = new PublicKey("5BxzpdNRuGnbSXpLfrZyxDTX3jGZEELwdj1mLWhgWTv"); // ! remove me 
-    //     let ix = await soundworkSDK.buyListing(nftMint);
+    //     let ix = await listSDK.buyListing(nftMint);
     //     let tx = new Transaction().add(ix);
     //     let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
     //     expect(txSig).toBeDefined();

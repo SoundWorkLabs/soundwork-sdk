@@ -5,12 +5,12 @@ const spl_token_1 = require("@solana/spl-token");
 const web3_js_1 = require("@solana/web3.js");
 const constants_1 = require("./constants");
 function findListingDataAcc(nftMint) {
-    const [listingDataAcc] = web3_js_1.PublicKey.findProgramAddressSync([nftMint.toBuffer(), Buffer.from("ryo")], constants_1.SOUNDWORK_PROGRAM_ID);
+    const [listingDataAcc] = web3_js_1.PublicKey.findProgramAddressSync([nftMint.toBuffer(), Buffer.from("ryo")], constants_1.SOUNDWORK_LIST_PROGRAM_ID);
     return listingDataAcc;
 }
 exports.findListingDataAcc = findListingDataAcc;
 function findAssetManagerAcc() {
-    const [assetManager] = web3_js_1.PublicKey.findProgramAddressSync([Buffer.from("soundwork")], constants_1.SOUNDWORK_PROGRAM_ID);
+    const [assetManager] = web3_js_1.PublicKey.findProgramAddressSync([Buffer.from("soundwork")], constants_1.SOUNDWORK_LIST_PROGRAM_ID);
     return assetManager;
 }
 exports.findAssetManagerAcc = findAssetManagerAcc;
