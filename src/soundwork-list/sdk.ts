@@ -25,7 +25,7 @@ import {
 // todo (Jimii): helpers for the marker/taker fees
 
 /**
- * This is the base level class for interfacing with the Soundwork marketplace contracts.
+ * This is the base level class for interfacing with the Soundwork listing contract.
  * @class
  */
 export class SoundworkListSDK {
@@ -48,7 +48,7 @@ export class SoundworkListSDK {
         );
     }
 
-    // --------------------------------------- fetchers
+    // --------------------------------------- fetchers 
     /**
      * Fetch data about a listed NFT on the soundwork Marketplace
      * @param {PublicKey} mint - the mint address of the nft
@@ -66,7 +66,7 @@ export class SoundworkListSDK {
 
             return listingData;
         } catch (err) {
-            throw new Error(`error during create Listing: ${err}`);
+            throw new Error(`error fetching listing data: ${err}`);
         }
     }
 
@@ -75,7 +75,7 @@ export class SoundworkListSDK {
      * List an NFT on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
      * @param {number} lamports - the amount in SOL for which the user is listing the NFT.
-     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction which should be signed and send.
+     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error creating a listing or if the response contains an error // todo
      */
     public async createListing(
@@ -122,7 +122,7 @@ export class SoundworkListSDK {
      * Edit a listed NFT on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
      * @param {number} newPriceLamports - the amount in SOL for the new listing.
-     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction which should be signed and send by provider.
+     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error editing a listing or if the response contains an error // todo
      */
     public async editListing(
@@ -168,7 +168,7 @@ export class SoundworkListSDK {
      * Cancel a Listing made on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
      * @param {number} newPriceLamports - the amount in SOL for the new listing.
-     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction which should be signed and send by provider.
+     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error deleting the listing or if the response contains an error // todo
      */
     public async deleteListing(
@@ -213,7 +213,7 @@ export class SoundworkListSDK {
     /**
      * Buy an NFT Listed on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the Listed NFT.
-     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction which should be signed and send by provider.
+     * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
      */
     public async buyListing(
