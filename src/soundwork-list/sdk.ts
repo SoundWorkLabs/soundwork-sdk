@@ -13,8 +13,8 @@ import {
     TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 
-import { MarketContracts } from "../idl/market_contracts";
-import { IDL as soundworkIDL } from "../idl/market_contracts";
+import { SoundworkList } from "./idl/soundwork_list";
+import { IDL as soundworkIDL } from "./idl/soundwork_list";
 import { SOUNDWORK_LIST_PROGRAM_ID } from "../constants";
 import {
     findAssetManagerAcc,
@@ -22,7 +22,7 @@ import {
     findVaultTokenAcc,
 } from "../pda";
 
-// todo (Jimii) helpers for the marke fees
+// todo (Jimii): helpers for the marker/taker fees
 
 /**
  * This is the base level class for interfacing with the Soundwork marketplace contracts.
@@ -33,7 +33,7 @@ export class SoundworkListSDK {
     // todo: what if it's not a person calling this?
     private provider!: Provider;
     /** Our anchor program helper */
-    private program: Program<MarketContracts>;
+    private program: Program<SoundworkList>;
     /** The connection object from Solana's SDK */
     public readonly connection: Connection;
 
@@ -41,7 +41,7 @@ export class SoundworkListSDK {
         this.provider = provider;
         this.connection = connection;
 
-        this.program = new Program<MarketContracts>(
+        this.program = new Program<SoundworkList>(
             soundworkIDL,
             SOUNDWORK_LIST_PROGRAM_ID,
             provider
@@ -52,16 +52,16 @@ export class SoundworkListSDK {
     /**
      * Fetch data about a listed NFT on the soundwork Marketplace
      * @param {PublicKey} mint - the mint address of the nft
-     * @returns {Promise<IdlAccounts<MarketContracts>["listingDataV1"]>} a promise that resolves to the data inside the listingDataV1 account
+     * @returns {Promise<IdlAccounts<SoundworkList>["listingDataV1"]>} a promise that resolves to the data inside the listingDataV1 account
      * @throws {Error} if there is an error fetching the details or if the response contains an error
      */
     async fetchListedNftByMint(
         mint: PublicKey
-    ): Promise<IdlAccounts<MarketContracts>["listingDataV1"]> {
+    ): Promise<IdlAccounts<SoundworkList>["listingDataV1"]> {
         try {
             const listingDataAcc = findListingDataAcc(mint);
 
-            let listingData: IdlAccounts<MarketContracts>["listingDataV1"] =
+            let listingData: IdlAccounts<SoundworkList>["listingDataV1"] =
                 await this.program.account.listingDataV1.fetch(listingDataAcc);
 
             return listingData;
@@ -190,7 +190,7 @@ export class SoundworkListSDK {
 
         try {
             let ix = await this.program.methods
-                .removeListing()
+                .deleteListing()
                 .accounts({
                     authority: this.provider.publicKey,
                     authorityTokenAccount: userTokenAcc,

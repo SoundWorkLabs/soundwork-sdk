@@ -1,6 +1,6 @@
-export type MarketContracts = {
+export type SoundworkList = {
   "version": "0.1.0",
-  "name": "market_contracts",
+  "name": "soundwork_list",
   "instructions": [
     {
       "name": "listNft",
@@ -117,7 +117,7 @@ export type MarketContracts = {
       ]
     },
     {
-      "name": "removeListing",
+      "name": "deleteListing",
       "docs": [
         "remove listing by closing the `listingData` account",
         "and transfer NFT from soundwork to user"
@@ -179,6 +179,11 @@ export type MarketContracts = {
           "isSigner": true
         },
         {
+          "name": "escrowWalletAsBuyer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "ogOwner",
           "isMut": true,
           "isSigner": false
@@ -220,6 +225,71 @@ export type MarketContracts = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "depositSol",
+      "docs": [
+        "transfer lamports to the escrow wallet"
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawSol",
+      "docs": [
+        "withdraw sol from the user escrow"
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -244,18 +314,56 @@ export type MarketContracts = {
             "type": "publicKey"
           },
           {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
             "name": "createdTs",
             "type": "i64"
           }
         ]
       }
+    },
+    {
+      "name": "solEscrowWallet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnrecognizedSigner",
+      "msg": "Signer address does not math the initializer address"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds to complete the transaction"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidAuthority",
+      "msg": "Expected Authority not found"
+    },
+    {
+      "code": 6003,
+      "name": "NFTAlreadyListed",
+      "msg": "You have already listed this NFT. Consider editing the listing instead"
     }
   ]
 };
 
-export const IDL: MarketContracts = {
+export const IDL: SoundworkList = {
   "version": "0.1.0",
-  "name": "market_contracts",
+  "name": "soundwork_list",
   "instructions": [
     {
       "name": "listNft",
@@ -372,7 +480,7 @@ export const IDL: MarketContracts = {
       ]
     },
     {
-      "name": "removeListing",
+      "name": "deleteListing",
       "docs": [
         "remove listing by closing the `listingData` account",
         "and transfer NFT from soundwork to user"
@@ -434,6 +542,11 @@ export const IDL: MarketContracts = {
           "isSigner": true
         },
         {
+          "name": "escrowWalletAsBuyer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "ogOwner",
           "isMut": true,
           "isSigner": false
@@ -475,6 +588,71 @@ export const IDL: MarketContracts = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "depositSol",
+      "docs": [
+        "transfer lamports to the escrow wallet"
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawSol",
+      "docs": [
+        "withdraw sol from the user escrow"
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -499,11 +677,49 @@ export const IDL: MarketContracts = {
             "type": "publicKey"
           },
           {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
             "name": "createdTs",
             "type": "i64"
           }
         ]
       }
+    },
+    {
+      "name": "solEscrowWallet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnrecognizedSigner",
+      "msg": "Signer address does not math the initializer address"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds to complete the transaction"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidAuthority",
+      "msg": "Expected Authority not found"
+    },
+    {
+      "code": 6003,
+      "name": "NFTAlreadyListed",
+      "msg": "You have already listed this NFT. Consider editing the listing instead"
     }
   ]
 };
