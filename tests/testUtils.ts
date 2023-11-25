@@ -1,6 +1,5 @@
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import {
-	Cluster,
 	clusterApiUrl,
 	Connection,
 	Keypair,
@@ -14,6 +13,11 @@ import { Provider } from "@coral-xyz/anchor";
 const USER_KEYPAIR_PATH = homedir() + "/.config/solana/id.json";
 export const userKeypair = Keypair.fromSecretKey(
 	Buffer.from(JSON.parse(readFileSync(USER_KEYPAIR_PATH, "utf-8")))
+);
+
+const BUYER_KEYPAIR_PATH = homedir() + "/.config/solana/id.json";
+export const buyerKeypair = Keypair.fromSecretKey(
+	Buffer.from(JSON.parse(readFileSync(BUYER_KEYPAIR_PATH, "utf-8")))
 );
 
 export const cluster = 'devnet' // ! change here
