@@ -15,7 +15,7 @@ export const userKeypair = Keypair.fromSecretKey(
 	Buffer.from(JSON.parse(readFileSync(USER_KEYPAIR_PATH, "utf-8")))
 );
 
-const BUYER_KEYPAIR_PATH = homedir() + "/.config/solana/id.json";
+const BUYER_KEYPAIR_PATH = homedir() + "/.config/solana/id-new.json";
 export const buyerKeypair = Keypair.fromSecretKey(
 	Buffer.from(JSON.parse(readFileSync(BUYER_KEYPAIR_PATH, "utf-8")))
 );
@@ -36,8 +36,30 @@ export function setProvider(): Provider {
 	return provider;
 }
 
+export function setSellerProvider(): Provider { // ! GET RID OF ME
+	const wallet = new Wallet(userKeypair);
+
+	let provider = new AnchorProvider(
+		connection,
+		wallet,
+		AnchorProvider.defaultOptions()
+	);
+	return provider;
+}
+
+export function setBuyerProvider(): Provider {
+	const wallet = new Wallet(buyerKeypair);
+
+	let provider = new AnchorProvider(
+		connection,
+		wallet,
+		AnchorProvider.defaultOptions()
+	);
+	return provider;
+}
+
 export const nftMint = new PublicKey(
-	"CiHbwBVEUUv2FypF5ndnLrYnuBBR3XEysu4v3yg6M6NE"
+	"FQYRgMrhmVP5946BC4ZWY4gb9GaXPEhY1nhQyCHtWdZm"
 );
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

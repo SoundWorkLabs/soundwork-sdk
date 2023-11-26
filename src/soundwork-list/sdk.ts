@@ -55,7 +55,7 @@ export class SoundworkListSDK {
      * @returns {Promise<IdlAccounts<SoundworkList>["listingDataV1"]>} a promise that resolves to the data inside the listingDataV1 account
      * @throws {Error} if there is an error fetching the details or if the response contains an error
      */
-    async fetchListedNftByMint(
+    async fetchListDataByMint(
         mint: PublicKey
     ): Promise<IdlAccounts<SoundworkList>["listingDataV1"]> {
         try {

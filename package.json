@@ -10,6 +10,7 @@
     "build:ts": "rm -rf ./dist && tsc",
     "update-list-idl": "cp ../market-contracts/target/types/soundwork_list.ts src/soundwork-list/idl",
     "update-bid-idl": "cp ../market-contracts/target/types/soundwork_bid.ts src/soundwork-bid/idl",
+    "update-idl": "pnpm run update-list-idl && pnpm run update-bid-idl",
     "test": "jest --runInBand --forceExit --coverage --verbose"
   },
   "keywords": [

@@ -56,6 +56,40 @@ export type SoundworkBid = {
       ]
     },
     {
+      "name": "editBid",
+      "accounts": [
+        {
+          "name": "bidder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "newLamports",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "newExpires",
+          "type": {
+            "option": "i64"
+          }
+        }
+      ]
+    },
+    {
       "name": "deleteBid",
       "docs": [
         "deletes a bid for an nft"
@@ -286,6 +320,40 @@ export const IDL: SoundworkBid = {
         {
           "name": "expiresTs",
           "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "editBid",
+      "accounts": [
+        {
+          "name": "bidder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "newLamports",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "newExpires",
+          "type": {
+            "option": "i64"
+          }
         }
       ]
     },

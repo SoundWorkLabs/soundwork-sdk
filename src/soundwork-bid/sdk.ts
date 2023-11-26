@@ -1,7 +1,4 @@
-import {
-    Connection,
-    TransactionInstruction,
-} from "@solana/web3.js";
+import { Connection, TransactionInstruction } from "@solana/web3.js";
 import { Program, Provider, BN, IdlAccounts } from "@coral-xyz/anchor";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
@@ -55,9 +52,9 @@ export class SoundworkBidSDK {
      * Fetch bidding data for an NFT using the mint
      * @param {PublicKey} mint - the mint address of the nft
      * @returns {Promise<IdlAccounts<SoundworkBid>["biddingDataV1"]>} a promise that resolves with the data inside the biddingDataV1 account
-     * @throws {Error} throws error if account not found/doesn't exist
+     * @throws {Error} throws error if mint has not bids placed on it
      */
-    async fetchBidDataAccount(
+    async fetchBidDataByMint(
         mint: PublicKey
     ): Promise<IdlAccounts<SoundworkBid>["biddingDataV1"]> {
         try {
@@ -76,7 +73,8 @@ export class SoundworkBidSDK {
     /**
      * Place a bid for an NFT listed on Soundwork.
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} lamports - the amount of lamports for which you'd like to purchase the NFT.
+     * @param {BN} lamports - the amount of lamports for which you'd like to purchase the NFT.
+     * @param {BN} expire_ts - unix timestamp of when the bid expires.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} Throws an Error if bidding is unsuccessful.
      * ## possible errors
@@ -118,19 +116,19 @@ export class SoundworkBidSDK {
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} Throws an Error if unsuccessful.
      */
-    async AcceptBid(mint: PublicKey): Promise<TransactionInstruction> {
+    async acceptBid(mint: PublicKey): Promise<TransactionInstruction> {
         if (!this.provider.publicKey) {
             throw Error("Expected public key not found");
         }
 
         const listingDataAcc = findListingDataAcc(mint);
         const biddingDataAcc = findBiddingDataAcc(mint);
-        const solEscrowWallet = findUserEscrowWallet(this.provider.publicKey);
         const assetManager = findAssetManagerAcc();
         const vaultTokenAccount = findVaultTokenAcc(mint, assetManager);
 
-        const bidData = await this.fetchBidDataAccount(mint); // this can fail(network issues)
-        let buyerTokenAcc = getAssociatedTokenAddressSync(mint, bidData.owner);
+        const buyer = await (await this.fetchBidDataByMint(mint)).owner; // this can fail(network issues)
+        let buyerTokenAcc = getAssociatedTokenAddressSync(mint, buyer);
+        let buyerSolEscrow = findUserEscrowWallet(buyer);
 
         try {
             let ix = await this.program.methods
@@ -139,9 +137,9 @@ export class SoundworkBidSDK {
                     seller: this.provider.publicKey,
                     listingDataAcc,
                     biddingDataAcc,
-                    buyer: bidData.owner,
+                    buyer,
                     mint,
-                    buyerSolEscrow: solEscrowWallet,
+                    buyerSolEscrow,
                     buyerTokenAcc,
                     assetManager,
                     vaultTokenAcc: vaultTokenAccount,
@@ -161,7 +159,6 @@ export class SoundworkBidSDK {
     /**
      * Reject a bid from a bidder.
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} lamports - the amount of lamports for which you'd like to purchase the NFT.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} Throws an Error if  unsuccessful.
      */
@@ -173,7 +170,7 @@ export class SoundworkBidSDK {
         const biddingDataAcc = findBiddingDataAcc(mint);
         const listingDataAcc = findListingDataAcc(mint);
 
-        const bidData = await this.fetchBidDataAccount(mint); // ! this can fail(network issues)
+        const bidData = await this.fetchBidDataByMint(mint); // ! this can fail(network issues)
         const buyerSolEscrow = findUserEscrowWallet(bidData.owner);
 
         try {
@@ -205,7 +202,7 @@ export class SoundworkBidSDK {
     async deleteBid(mint: PublicKey): Promise<TransactionInstruction> {
         const biddingDataAcc = findBiddingDataAcc(mint);
 
-        const bidData = await this.fetchBidDataAccount(mint); // ! this can fail(network issues)
+        const bidData = await this.fetchBidDataByMint(mint); // ! this can fail(network issues)
         const solEscrowWallet = findUserEscrowWallet(bidData.owner);
 
         try {
