@@ -28,7 +28,11 @@ describe("SOUNDWORK BID SDK TEST", () => {
 		// beforeAll(() => {
 		//     bidSDK = new SoundworkBidSDK(provider, connection);
 		// });
-        
+
+		it("dummy", () => {
+			//
+		})
+
 		// it("should fail fetching bidding data for non-existent account", async () => {
 		// 	try {
 		// 		let nonExistentMint = new PublicKey(
