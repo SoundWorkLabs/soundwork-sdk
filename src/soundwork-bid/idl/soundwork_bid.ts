@@ -1,21 +1,151 @@
-export type MarketContracts = {
+export type SoundworkBid = {
   "version": "0.1.0",
-  "name": "market_contracts",
+  "name": "soundwork_bid",
   "instructions": [
     {
-      "name": "listNft",
+      "name": "makeBid",
       "docs": [
-        "list an NFT on soundwork by moving NFT to our asset manager",
-        "create an `listingData` account to hold price,"
+        "make a bid for an nft"
       ],
       "accounts": [
         {
-          "name": "authority",
+          "name": "bidder",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "authorityTokenAccount",
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "listingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "soundworkList",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "expiresTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "editBid",
+      "accounts": [
+        {
+          "name": "bidder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "newLamports",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "newExpires",
+          "type": {
+            "option": "i64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteBid",
+      "docs": [
+        "deletes a bid for an nft"
+      ],
+      "accounts": [
+        {
+          "name": "bidder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "soundworkList",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "acceptBid",
+      "docs": [
+        "accepts bid from user"
+      ],
+      "accounts": [
+        {
+          "name": "seller",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "listingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
           "isMut": true,
           "isSigner": false
         },
@@ -25,18 +155,28 @@ export type MarketContracts = {
           "isSigner": false
         },
         {
+          "name": "buyerSolEscrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerTokenAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "assetManager",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "vaultTokenAccount",
+          "name": "vaultTokenAcc",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "listingData",
-          "isMut": true,
+          "name": "soundworkList",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -55,161 +195,41 @@ export type MarketContracts = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "lamports",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "editListing",
-      "docs": [
-        "edit listing, by updating the `listingData` account information"
-      ],
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "authorityTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "assetManager",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "listingData",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "lamports",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "removeListing",
-      "docs": [
-        "remove listing by closing the `listingData` account",
-        "and transfer NFT from soundwork to user"
-      ],
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "authorityTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "assetManager",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "listingData",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
       "args": []
     },
     {
-      "name": "buyListing",
+      "name": "rejectBid",
       "docs": [
-        "buy an NFT from soundwork",
-        "transfer NFT to user if he has funds to purchase the NFT"
+        "reject a user's bid"
       ],
       "accounts": [
         {
-          "name": "buyer",
+          "name": "seller",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "ogOwner",
+          "name": "listingDataAcc",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "assetManager",
+          "name": "buyer",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "vaultTokenAccount",
+          "name": "buyerSolEscrow",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "buyerTokenAccount",
+          "name": "biddingDataAcc",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "listingData",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
+          "name": "soundworkList",
           "isMut": false,
           "isSigner": false
         },
@@ -224,17 +244,14 @@ export type MarketContracts = {
   ],
   "accounts": [
     {
-      "name": "assetManagerV1",
-      "type": {
-        "kind": "struct",
-        "fields": []
-      }
-    },
-    {
-      "name": "listingDataV1",
+      "name": "biddingDataV1",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "expiresTs",
+            "type": "i64"
+          },
           {
             "name": "lamports",
             "type": "u64"
@@ -242,10 +259,6 @@ export type MarketContracts = {
           {
             "name": "owner",
             "type": "publicKey"
-          },
-          {
-            "name": "createdTs",
-            "type": "i64"
           }
         ]
       }
@@ -253,24 +266,154 @@ export type MarketContracts = {
   ]
 };
 
-export const IDL: MarketContracts = {
+export const IDL: SoundworkBid = {
   "version": "0.1.0",
-  "name": "market_contracts",
+  "name": "soundwork_bid",
   "instructions": [
     {
-      "name": "listNft",
+      "name": "makeBid",
       "docs": [
-        "list an NFT on soundwork by moving NFT to our asset manager",
-        "create an `listingData` account to hold price,"
+        "make a bid for an nft"
       ],
       "accounts": [
         {
-          "name": "authority",
+          "name": "bidder",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "authorityTokenAccount",
+          "name": "mint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "listingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "soundworkList",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "expiresTs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "editBid",
+      "accounts": [
+        {
+          "name": "bidder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "newLamports",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "newExpires",
+          "type": {
+            "option": "i64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleteBid",
+      "docs": [
+        "deletes a bid for an nft"
+      ],
+      "accounts": [
+        {
+          "name": "bidder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "soundworkList",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "acceptBid",
+      "docs": [
+        "accepts bid from user"
+      ],
+      "accounts": [
+        {
+          "name": "seller",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "listingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "biddingDataAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
           "isMut": true,
           "isSigner": false
         },
@@ -280,18 +423,28 @@ export const IDL: MarketContracts = {
           "isSigner": false
         },
         {
+          "name": "buyerSolEscrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerTokenAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "assetManager",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "vaultTokenAccount",
+          "name": "vaultTokenAcc",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "listingData",
-          "isMut": true,
+          "name": "soundworkList",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -310,161 +463,41 @@ export const IDL: MarketContracts = {
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "lamports",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "editListing",
-      "docs": [
-        "edit listing, by updating the `listingData` account information"
-      ],
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "authorityTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "assetManager",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "listingData",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "lamports",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "removeListing",
-      "docs": [
-        "remove listing by closing the `listingData` account",
-        "and transfer NFT from soundwork to user"
-      ],
-      "accounts": [
-        {
-          "name": "authority",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "authorityTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "assetManager",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vaultTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "listingData",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
       "args": []
     },
     {
-      "name": "buyListing",
+      "name": "rejectBid",
       "docs": [
-        "buy an NFT from soundwork",
-        "transfer NFT to user if he has funds to purchase the NFT"
+        "reject a user's bid"
       ],
       "accounts": [
         {
-          "name": "buyer",
+          "name": "seller",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "ogOwner",
+          "name": "listingDataAcc",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "assetManager",
+          "name": "buyer",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "vaultTokenAccount",
+          "name": "buyerSolEscrow",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "buyerTokenAccount",
+          "name": "biddingDataAcc",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "mint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "listingData",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
+          "name": "soundworkList",
           "isMut": false,
           "isSigner": false
         },
@@ -479,17 +512,14 @@ export const IDL: MarketContracts = {
   ],
   "accounts": [
     {
-      "name": "assetManagerV1",
-      "type": {
-        "kind": "struct",
-        "fields": []
-      }
-    },
-    {
-      "name": "listingDataV1",
+      "name": "biddingDataV1",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "expiresTs",
+            "type": "i64"
+          },
           {
             "name": "lamports",
             "type": "u64"
@@ -497,10 +527,6 @@ export const IDL: MarketContracts = {
           {
             "name": "owner",
             "type": "publicKey"
-          },
-          {
-            "name": "createdTs",
-            "type": "i64"
           }
         ]
       }
