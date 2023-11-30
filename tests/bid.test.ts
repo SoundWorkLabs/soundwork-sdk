@@ -79,13 +79,13 @@ describe("SOUNDWORK BID SDK TEST", () => {
 
 		// it('deletes a bid ', async () => {
 		//     await sleep(4000); // Delay
-		//     let ix = await bidSDK.deleteBid(nftMint);
-		//     let tx = new Transaction().add(ix);
-		//     let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
-		//     expect(txSig).toBeDefined();
-		//     console.log(
-		//         `delete bid tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-		//     );
+		    // let ix = await bidSDK.deleteBid(nftMint);
+		    // let tx = new Transaction().add(ix);
+		    // let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
+		    // expect(txSig).toBeDefined();
+		    // console.log(
+		    //     `delete bid tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		    // );
 		// }, 60000);
 	});
 

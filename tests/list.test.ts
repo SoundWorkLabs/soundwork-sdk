@@ -46,15 +46,15 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// }, 60000);
 
 		// it("should create a listing", async () => {
-		// 	let ix = await listSDK.createListing(nftMint, 1);
-		// 	let tx = new Transaction().add(ix);
-		// 	let txSig = await sendAndConfirmTransaction(provider.connection, tx, [
-		// 		userKeypair,
-		// 	]);
-		// 	expect(txSig).toBeDefined();
-		// 	console.log(
-		// 		`create listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-		// 	);
+		// let ix = await listSDK.createListing(nftMint, 1);
+		// let tx = new Transaction().add(ix);
+		// let txSig = await sendAndConfirmTransaction(provider.connection, tx, [
+		// 	userKeypair,
+		// ]);
+		// expect(txSig).toBeDefined();
+		// console.log(
+		// 	`create listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// );
 		// 	await sleep(4000); // Delay
 		// }, 60000);
 
@@ -72,14 +72,14 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// it('delete listed NFT and close listing data account', async () => {
 		// 	await sleep(4000); // Delay
 
-		// 	let ix = await listSDK.deleteListing(nftMint);
-		// 	let tx = new Transaction().add(ix);
-		// 	let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
+		// let ix = await listSDK.deleteListing(nftMint);
+		// let tx = new Transaction().add(ix);
+		// let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
 
-		// 	expect(txSig).toBeDefined();
-		// 	console.log(
-		// 		`delete listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-		// 	);
+		// expect(txSig).toBeDefined();
+		// console.log(
+		// 	`delete listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// );
 		// }, 60000);
 	});
 
