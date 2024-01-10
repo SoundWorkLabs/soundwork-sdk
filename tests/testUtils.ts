@@ -59,7 +59,7 @@ export function setBuyerProvider(): Provider {
 }
 
 export const nftMint = new PublicKey(
-	"FQYRgMrhmVP5946BC4ZWY4gb9GaXPEhY1nhQyCHtWdZm"
+	"E3nQYNBhTu7F2idxy5zceAFh5YMKXU6Uo3oeSeebhcWC"
 );
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
