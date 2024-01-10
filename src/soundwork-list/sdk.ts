@@ -72,7 +72,7 @@ export class SoundworkListSDK {
     /**
      * List an NFT on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} lamports - the amount in SOL for which the user is listing the NFT.
+     * @param {number} lamports - the amount in lamports for which the user is listing the NFT.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error creating a listing or if the response contains an error // todo
      */
@@ -96,7 +96,7 @@ export class SoundworkListSDK {
 
         try {
             let ix = await this.program.methods
-                .listNft(new BN(lamports * LAMPORTS_PER_SOL))
+                .listNft(new BN(lamports))
                 .accounts({
                     authority: this.provider.publicKey,
                     authorityTokenAccount: userTokenAcc,
@@ -119,7 +119,7 @@ export class SoundworkListSDK {
     /**
      * Edit a listed NFT on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} newPriceLamports - the amount in SOL for the new listing.
+     * @param {number} newPriceLamports - the amount in lamports for the new listing.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error editing a listing or if the response contains an error // todo
      */
@@ -143,7 +143,7 @@ export class SoundworkListSDK {
 
         try {
             let ix = await this.program.methods
-                .editListing(new BN(newPriceLamports * LAMPORTS_PER_SOL))
+                .editListing(new BN(newPriceLamports))
                 .accounts({
                     authority: this.provider.publicKey,
                     authorityTokenAccount: userTokenAcc,
@@ -165,7 +165,6 @@ export class SoundworkListSDK {
     /**
      * Cancel a Listing made on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} newPriceLamports - the amount in SOL for the new listing.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error deleting the listing or if the response contains an error // todo
      */

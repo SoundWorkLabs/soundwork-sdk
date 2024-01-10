@@ -44,7 +44,7 @@ import { SoundworkListSDK } from "@jimii/soundwork-sdk";
 let listSDK = new SoundworkListSDK(provider, connection);
 
 // list an NFT
-let ix = await listSDK.createListing(nftMint, 1);
+let ix = await listSDK.createListing(nftMint, new BN(1 * LAMPORTS_PER_SOL));
 let tx = new Transaction().add(ix);
 
 await sendAndConfirmTransaction(provider.connection, tx, [userKeypair]);
