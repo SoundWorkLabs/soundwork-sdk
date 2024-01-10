@@ -25,7 +25,7 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 
 	describe("SELLER TESTS", () => {
 		// let provider = setSellerProvider();
-
+    
 		// beforeAll(() => {
 		// 	listSDK = new SoundworkListSDK(provider, connection);
 		// });
@@ -133,5 +133,4 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 	// 		);
 	// 	}, 60000);
 	// });
-
 });
