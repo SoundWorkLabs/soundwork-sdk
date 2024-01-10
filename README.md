@@ -23,11 +23,11 @@
 
 ```bash
 # yarn
-yarn add @jimii/soundwork-sdk
+yarn add @soundwork-oss/soundwork-sdk
 # npm
-npm install @jimii/soundwork-sdk
+npm install @soundwork-oss/soundwork-sdk
 # pnpm
-pnpm install @jimii/soundwork-sdk
+pnpm install @soundwork-oss/soundwork-sdk
 ```
 
 ## Examples
@@ -38,7 +38,7 @@ Check out the extensive list of methods you can call in the [tests directory](./
 
 ```ts
 // import the SDK
-import { SoundworkListSDK } from "@jimii/soundwork-sdk";
+import { SoundworkListSDK } from "@soundwork-oss/soundwork-sdk";
 
 // Initialize the list program SDK
 let listSDK = new SoundworkListSDK(provider, connection);
@@ -54,7 +54,7 @@ await sendAndConfirmTransaction(provider.connection, tx, [userKeypair]);
 
 ```ts
 // import the SDK
-import { SoundworkBidSDK } from "@jimii/soundwork-sdk";
+import { SoundworkBidSDK } from "@soundwork-oss/soundwork-sdk";
 
 // Initialize the list program SDK
 let bidSDK = new SoundworkBidSDK(provider, connection);
