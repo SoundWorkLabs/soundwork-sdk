@@ -220,6 +220,12 @@ export type SoundworkList = {
           "isSigner": false
         },
         {
+          "name": "bidDataAcc",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -368,6 +374,11 @@ export type SoundworkList = {
       "code": 6003,
       "name": "NFTAlreadyListed",
       "msg": "You have already listed this NFT. Consider editing the listing instead"
+    },
+    {
+      "code": 6004,
+      "name": "Overflow",
+      "msg": "operation caused an overflow"
     }
   ]
 };
@@ -594,6 +605,12 @@ export const IDL: SoundworkList = {
           "isSigner": false
         },
         {
+          "name": "bidDataAcc",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -742,6 +759,11 @@ export const IDL: SoundworkList = {
       "code": 6003,
       "name": "NFTAlreadyListed",
       "msg": "You have already listed this NFT. Consider editing the listing instead"
+    },
+    {
+      "code": 6004,
+      "name": "Overflow",
+      "msg": "operation caused an overflow"
     }
   ]
 };

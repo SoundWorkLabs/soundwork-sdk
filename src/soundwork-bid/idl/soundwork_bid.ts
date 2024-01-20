@@ -69,22 +69,32 @@ export type SoundworkBid = {
           "isSigner": false
         },
         {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "soundworkList",
           "isMut": false,
           "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "newLamports",
-          "type": {
-            "option": "u64"
-          }
-        },
-        {
           "name": "newExpires",
           "type": {
             "option": "i64"
+          }
+        },
+        {
+          "name": "newLamports",
+          "type": {
+            "option": "u64"
           }
         }
       ]
@@ -337,22 +347,32 @@ export const IDL: SoundworkBid = {
           "isSigner": false
         },
         {
+          "name": "solEscrowWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "soundworkList",
           "isMut": false,
           "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "newLamports",
-          "type": {
-            "option": "u64"
-          }
-        },
-        {
           "name": "newExpires",
           "type": {
             "option": "i64"
+          }
+        },
+        {
+          "name": "newLamports",
+          "type": {
+            "option": "u64"
           }
         }
       ]

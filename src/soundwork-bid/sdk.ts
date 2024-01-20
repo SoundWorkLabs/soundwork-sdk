@@ -136,7 +136,14 @@ export class SoundworkBidSDK {
 		lamports: BN | null,
 		expires_ts: BN | null
 	): Promise<TransactionInstruction> {
+		if (!this.bidderProvider.publicKey) {
+			throw Error("Expected public key not found");
+		}
+
 		const biddingDataAcc = findBiddingDataAcc(mint);
+		let solEscrowWallet = findUserEscrowWallet(
+			this.bidderProvider.publicKey
+		);
 
 		try {
 			let ix = await this.program.methods
@@ -144,6 +151,8 @@ export class SoundworkBidSDK {
 				.accounts({
 					bidder: this.bidderProvider.publicKey,
 					biddingDataAcc,
+					solEscrowWallet,
+					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
 				})
 				.instruction();
