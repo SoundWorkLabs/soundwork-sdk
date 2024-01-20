@@ -174,14 +174,20 @@ export type SoundworkList = {
       ],
       "accounts": [
         {
-          "name": "buyer",
+          "name": "payer",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "escrowWalletAsBuyer",
+          "name": "buyer",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "escrowWalletAsBuyer",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
         },
         {
           "name": "ogOwner",
@@ -542,14 +548,20 @@ export const IDL: SoundworkList = {
       ],
       "accounts": [
         {
-          "name": "buyer",
+          "name": "payer",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "escrowWalletAsBuyer",
+          "name": "buyer",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "escrowWalletAsBuyer",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true
         },
         {
           "name": "ogOwner",

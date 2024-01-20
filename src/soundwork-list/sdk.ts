@@ -17,6 +17,7 @@ import { SOUNDWORK_LIST_PROGRAM_ID } from "../constants";
 import {
     findAssetManagerAcc,
     findListingDataAcc,
+    findUserEscrowWallet,
     findVaultTokenAcc,
 } from "../pda";
 
@@ -72,7 +73,7 @@ export class SoundworkListSDK {
     /**
      * List an NFT on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} lamports - the amount in SOL for which the user is listing the NFT.
+     * @param {number} lamports - the amount in lamports for which the user is listing the NFT.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error creating a listing or if the response contains an error // todo
      */
@@ -96,7 +97,7 @@ export class SoundworkListSDK {
 
         try {
             let ix = await this.program.methods
-                .listNft(new BN(lamports * LAMPORTS_PER_SOL))
+                .listNft(new BN(lamports))
                 .accounts({
                     authority: this.provider.publicKey,
                     authorityTokenAccount: userTokenAcc,
@@ -119,7 +120,7 @@ export class SoundworkListSDK {
     /**
      * Edit a listed NFT on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} newPriceLamports - the amount in SOL for the new listing.
+     * @param {number} newPriceLamports - the amount in lamports for the new listing.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error editing a listing or if the response contains an error // todo
      */
@@ -143,7 +144,7 @@ export class SoundworkListSDK {
 
         try {
             let ix = await this.program.methods
-                .editListing(new BN(newPriceLamports * LAMPORTS_PER_SOL))
+                .editListing(new BN(newPriceLamports))
                 .accounts({
                     authority: this.provider.publicKey,
                     authorityTokenAccount: userTokenAcc,
@@ -165,7 +166,6 @@ export class SoundworkListSDK {
     /**
      * Cancel a Listing made on the soundwork marketplace
      * @param {PublicKey} mint - the mint address of the NFT.
-     * @param {number} newPriceLamports - the amount in SOL for the new listing.
      * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
      * @throws {Error} if there is an error deleting the listing or if the response contains an error // todo
      */
@@ -231,10 +231,6 @@ export class SoundworkListSDK {
             this.provider.publicKey
         );
 
-        // ! remove me down
-        console.log("buyer token account", buyerTokenAccount.toBase58());
-        // ! remove me up
-
         let listingData = await this.program.account.listingDataV1.fetch(
             listingDataAcc
         );
@@ -243,9 +239,10 @@ export class SoundworkListSDK {
             let ix = await this.program.methods
                 .buyListing()
                 .accounts({
+                    payer: this.provider.publicKey,
                     buyer: this.provider.publicKey,
                     ogOwner: listingData.owner,
-                    escrowWalletAsBuyer: this.provider.publicKey, // ! any mutable account owned by sys program will do
+                    escrowWalletAsBuyer: null, 
                     buyerTokenAccount,
                     mint,
                     assetManager,
@@ -261,5 +258,51 @@ export class SoundworkListSDK {
         } catch (err) {
             throw new Error(`error during Buy Listing: ${err}`);
         }
+    }
+
+    // --------------------------------------- Escrow methods. (withdraw/deposit) 
+    /**
+        * Deposit SOL into Escrow owned by the soundwork marketplace contract
+        * @param {number} lamports - the amount in lamports you are depositing into the escrow.
+        * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+        * @throws {Error} throw an error if we encounter a failure
+        */
+    public async depositSol(lamports: number): Promise<TransactionInstruction> {
+        if (!this.provider.publicKey) {
+            throw Error("Expected public key not found");
+        }
+
+        const solEscrowWallet = findUserEscrowWallet(this.provider.publicKey);
+
+        let ix = await this.program.methods.depositSol(new BN(lamports)).accounts({
+            owner: this.provider.publicKey,
+            solEscrowWallet,
+            systemProgram: SystemProgram.programId,
+        }).instruction();
+
+        return ix;
+    }
+
+    /**
+       * Deposit SOL into Escrow owned by the soundwork marketplace contract
+       * @param {number} lamports - the amount in lamports you'd like to withdraw from the escrow.
+       * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+       * @throws {Error} throw an error if we encounter a failure
+       */
+    public async withDrawSol(lamports: number): Promise<TransactionInstruction> {
+        if (!this.provider.publicKey) {
+            throw Error("Expected public key not found");
+        }
+
+        const solEscrowWallet = findUserEscrowWallet(this.provider.publicKey);
+
+        let ix = await this.program.methods.withdrawSol(new BN(lamports)).accounts({
+            payer: this.provider.publicKey,
+            authority: this.provider.publicKey,
+            solEscrowWallet: solEscrowWallet,
+            systemProgram: SystemProgram.programId,
+        }).instruction();
+
+        return ix;
     }
 }

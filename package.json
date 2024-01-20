@@ -1,35 +1,42 @@
 {
-  "name": "@jimii/soundwork-sdk",
-  "version": "0.0.11",
-  "description": "",
-  "main": "./dist/main.js",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build:ts": "rm -rf ./dist && tsc",
-    "update-list-idl": "cp ../market-contracts/target/types/soundwork_list.ts src/soundwork-list/idl",
-    "update-bid-idl": "cp ../market-contracts/target/types/soundwork_bid.ts src/soundwork-bid/idl",
-    "update-idl": "pnpm run update-list-idl && pnpm run update-bid-idl",
-    "test": "jest --runInBand --forceExit --coverage --verbose"
-  },
-  "keywords": [
-    "soundwork",
-    "typescript",
-    "sdk"
-  ],
-  "author": "Jimii",
-  "license": "ISC",
-  "dependencies": {
-    "@coral-xyz/anchor": "^0.29.0",
-    "@project-serum/anchor": "^0.26.0",
-    "@solana/spl-token": "^0.3.8",
-    "@solana/web3.js": "^1.87.1"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.5.5",
-    "jest": "^29.7.0",
-    "jest-runner-tsc": "^1.6.0",
-    "ts-jest": "^29.1.1"
-  }
+	"name": "@soundwork-oss/soundwork-sdk",
+	"version": "0.0.12",
+	"description": "TypeScript client for the soundwork marketplace contracts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SoundWorkLabs/soundwork-sdk.git"
+	},
+	"homepage": "https://github.com/SoundWorkLabs/xnft/soundwork-sdk#readme",
+	"keywords": [
+		"soundwork",
+		"web3",
+		"solana",
+		"typescript",
+		"sdk"
+	],
+	"main": "./dist/main.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build:ts": "rm -rf ./dist && tsc",
+		"update-list-idl": "cp ../market-contracts/target/types/soundwork_list.ts src/soundwork-list/idl",
+		"update-bid-idl": "cp ../market-contracts/target/types/soundwork_bid.ts src/soundwork-bid/idl",
+		"update-idl": "pnpm run update-list-idl && pnpm run update-bid-idl",
+		"test": "jest --runInBand --forceExit --coverage --verbose"
+	},
+	"author": "Jimii <jimii@soundwork.io>",
+	"license": "ISC",
+	"dependencies": {
+		"@coral-xyz/anchor": "^0.29.0",
+		"@project-serum/anchor": "^0.26.0",
+		"@solana/spl-token": "^0.3.8",
+		"@solana/web3.js": "^1.87.1"
+	},
+	"devDependencies": {
+		"@types/jest": "^29.5.5",
+		"jest": "^29.7.0",
+		"jest-runner-tsc": "^1.6.0",
+		"ts-jest": "^29.1.1"
+	}
 }
