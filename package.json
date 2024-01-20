@@ -1,16 +1,16 @@
 {
 	"name": "@soundwork-oss/soundwork-sdk",
-	"version": "0.0.11",
+	"version": "0.0.12",
 	"description": "TypeScript client for the soundwork marketplace contracts",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/SoundWorkLabs/soundwork-sdk.git"
 	},
 	"homepage": "https://github.com/SoundWorkLabs/xnft/soundwork-sdk#readme",
-  "keywords": [
+	"keywords": [
 		"soundwork",
-    "web3",
-    "solana",
+		"web3",
+		"solana",
 		"typescript",
 		"sdk"
 	],
@@ -25,7 +25,6 @@
 		"update-idl": "pnpm run update-list-idl && pnpm run update-bid-idl",
 		"test": "jest --runInBand --forceExit --coverage --verbose"
 	},
-
 	"author": "Jimii <jimii@soundwork.io>",
 	"license": "ISC",
 	"dependencies": {

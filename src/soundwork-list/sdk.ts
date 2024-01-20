@@ -231,10 +231,6 @@ export class SoundworkListSDK {
             this.provider.publicKey
         );
 
-        // ! remove me down
-        console.log("buyer token account", buyerTokenAccount.toBase58());
-        // ! remove me up
-
         let listingData = await this.program.account.listingDataV1.fetch(
             listingDataAcc
         );
@@ -243,9 +239,10 @@ export class SoundworkListSDK {
             let ix = await this.program.methods
                 .buyListing()
                 .accounts({
+                    payer: this.provider.publicKey,
                     buyer: this.provider.publicKey,
                     ogOwner: listingData.owner,
-                    escrowWalletAsBuyer: this.provider.publicKey, // ! any mutable account owned by sys program will do
+                    escrowWalletAsBuyer: null, 
                     buyerTokenAccount,
                     mint,
                     assetManager,

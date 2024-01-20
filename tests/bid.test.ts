@@ -68,7 +68,7 @@ describe("SOUNDWORK BID SDK TEST", () => {
 
 		// it('should edit a bid', async () => {
 		//     await sleep(4000); // Delay
-		//     let ix = await listSDK.editBid(nftMint, 20);
+		//     let ix = await bidSDK.editBid(nftMint, 20, null);
 		//     let tx = new Transaction().add(ix);
 		//     let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
 		//     expect(txSig).toBeDefined();
