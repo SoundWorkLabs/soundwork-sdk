@@ -235,7 +235,7 @@ export class SoundworkListSDK {
 
 		try {
 			let ix = await this.program.methods
-				.buyListing()
+				.buyListing(null)
 				.accounts({
 					payer: this.provider.publicKey,
 					buyer: this.provider.publicKey,
@@ -246,7 +246,6 @@ export class SoundworkListSDK {
 					assetManager,
 					vaultTokenAccount,
 					listingData: listingDataAcc,
-					bidDataAcc: null,
 					tokenProgram: TOKEN_PROGRAM_ID,
 					associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,

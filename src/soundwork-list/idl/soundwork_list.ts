@@ -220,12 +220,6 @@ export type SoundworkList = {
           "isSigner": false
         },
         {
-          "name": "bidDataAcc",
-          "isMut": true,
-          "isSigner": false,
-          "isOptional": true
-        },
-        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -241,7 +235,14 @@ export type SoundworkList = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "bidAmt",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
     },
     {
       "name": "depositSol",
@@ -605,12 +606,6 @@ export const IDL: SoundworkList = {
           "isSigner": false
         },
         {
-          "name": "bidDataAcc",
-          "isMut": true,
-          "isSigner": false,
-          "isOptional": true
-        },
-        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -626,7 +621,14 @@ export const IDL: SoundworkList = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "bidAmt",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
     },
     {
       "name": "depositSol",
