@@ -1,25 +1,35 @@
 import {
-	Connection,
-	LAMPORTS_PER_SOL,
-	TransactionInstruction,
-} from "@solana/web3.js";
-import { Program, Provider, BN, IdlAccounts } from "@coral-xyz/anchor";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+	BN,
+	IdlAccounts,
+	IdlTypes,
+	Program,
+	Provider,
+} from "@coral-xyz/anchor";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import {
 	getAssociatedTokenAddressSync,
 	TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-
-import { SoundworkList } from "./idl/soundwork_list";
-import { IDL as soundworkIDL } from "./idl/soundwork_list";
-import { SOUNDWORK_LIST_PROGRAM_ID } from "../constants";
 import {
-	findAssetManagerAcc,
-	findListingDataAcc,
-	findUserEscrowWallet,
-	findVaultTokenAcc,
+	Connection,
+	LAMPORTS_PER_SOL,
+	PublicKey,
+	SystemProgram,
+	TransactionInstruction,
+} from "@solana/web3.js";
+
+import {
+	CORE_PROGRAM_ID,
+	SOUNDWORK_LIST_PROGRAM_ID,
+	TREASURY_ADDRESS,
+} from "../constants";
+import {
+	findAssetManagerAddress,
+	findListingDataAddress,
+	findMarketplaceConfigAddress,
+	findWalletAddress,
 } from "../pda";
+import { IDL as soundworkIDL, SoundworkList } from "./idl/soundwork_list";
 
 // todo (Jimii): helpers for the marker/taker fees
 
@@ -49,19 +59,19 @@ export class SoundworkListSDK {
 
 	// --------------------------------------- fetchers
 	/**
-	 * Fetch data about a listed NFT on the soundwork Marketplace
-	 * @param {PublicKey} mint - the mint address of the nft
-	 * @returns {Promise<IdlAccounts<SoundworkList>["listingDataV1"]>} a promise that resolves to the data inside the listingDataV1 account
+	 * Fetch data about a listed collectible on the soundwork Marketplace
+	 * @param {PublicKey} asset - the address of the collectible
+	 * @returns {Promise<IdlAccounts<SoundworkList>["listingData"]>} a promise that resolves to the data inside the listingDataV1 account
 	 * @throws {Error} if there is an error fetching the details or if the response contains an error
 	 */
 	async fetchListDataByMint(
-		mint: PublicKey
-	): Promise<IdlAccounts<SoundworkList>["listingDataV1"]> {
+		asset: PublicKey
+	): Promise<IdlAccounts<SoundworkList>["listingData"]> {
 		try {
-			const listingDataAcc = findListingDataAcc(mint);
+			const listingDataAcc = findListingDataAddress(asset);
 
-			let listingData: IdlAccounts<SoundworkList>["listingDataV1"] =
-				await this.program.account.listingDataV1.fetch(listingDataAcc);
+			let listingData: IdlAccounts<SoundworkList>["listingData"] =
+				await this.program.account.listingData.fetch(listingDataAcc);
 
 			return listingData;
 		} catch (err) {
@@ -72,41 +82,32 @@ export class SoundworkListSDK {
 	// --------------------------------------- listing calls
 	/**
 	 * List an NFT on the soundwork marketplace
-	 * @param {PublicKey} mint - the mint address of the NFT.
-	 * @param {number} lamports - the amount in lamports for which the user is listing the NFT.
+	 * @param {PublicKey} asset - the asset address.
+	 * @param {number} amount - the amount in lamports for which the user is listing the NFT.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error creating a listing or if the response contains an error // todo
 	 */
-	public async createListing(
-		mint: PublicKey,
-		lamports: number
+	public async listAsset(
+		asset: PublicKey,
+		amount: number,
+		paymentOption: IdlTypes<SoundworkList>["PaymentOption"]
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const listingDataAcc = findListingDataAcc(mint);
-		const assetManager = findAssetManagerAcc();
-		const vaultTokenAccount = findVaultTokenAcc(mint, assetManager);
-
-		// derive token account
-		let userTokenAcc = getAssociatedTokenAddressSync(
-			mint,
-			this.provider.publicKey
-		);
-
 		try {
 			let ix = await this.program.methods
-				.listNft(new BN(lamports))
+				.listAsset({
+					amount,
+					paymentOption,
+				})
 				.accounts({
-					authority: this.provider.publicKey,
-					authorityTokenAccount: userTokenAcc,
-					mint,
-					assetManager,
-					vaultTokenAccount,
-					listingData: listingDataAcc,
-					tokenProgram: TOKEN_PROGRAM_ID,
-					associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+					payer: this.provider.publicKey,
+					asset,
+					listingData: findListingDataAddress(asset),
+					assetManager: findAssetManagerAddress(),
+					coreProgram: CORE_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
 				})
 				.instruction();
@@ -117,86 +118,61 @@ export class SoundworkListSDK {
 		}
 	}
 
-	/**
-	 * Edit a listed NFT on the soundwork marketplace
-	 * @param {PublicKey} mint - the mint address of the NFT.
-	 * @param {number} newPriceLamports - the amount in lamports for the new listing.
-	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
-	 * @throws {Error} if there is an error editing a listing or if the response contains an error // todo
-	 */
-	public async editListing(
-		mint: PublicKey,
-		newPriceLamports: number
-	): Promise<TransactionInstruction> {
-		if (!this.provider.publicKey) {
-			throw Error("Expected public key not found");
-		}
+	// todo(Jimii): implement edit_listing method
+	// /**
+	//  * Edit a listed collectible on the soundwork marketplace
+	//  * @param {PublicKey} asset - the asset address.
+	//  * @param {number} newPrice - the new amount in lamports.
+	//  * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+	//  * @throws {Error} if there is an error editing a listing or if the response contains an error // todo
+	//  */
+	// public async editListing(
+	// 	asset: PublicKey,
+	// 	newPrice: number
+	// ): Promise<TransactionInstruction> {
+	// 	if (!this.provider.publicKey) {
+	// 		throw Error("Expected public key not found");
+	// 	}
 
-		const listingDataAcc = findListingDataAcc(mint);
-		const assetManager = findAssetManagerAcc();
-		const vaultTokenAccount = findVaultTokenAcc(mint, assetManager);
+	// 	try {
+	// 		let ix = await this.program.methods
+	// 			.editListing(new BN(newPriceLamports))
+	// 			.accounts({
+	// 				payer: this.provider.publicKey,
 
-		// derive token account
-		let userTokenAcc = getAssociatedTokenAddressSync(
-			mint,
-			this.provider.publicKey
-		);
+	// 				tokenProgram: TOKEN_PROGRAM_ID,
+	// 				systemProgram: SystemProgram.programId,
+	// 			})
+	// 			.instruction();
 
-		try {
-			let ix = await this.program.methods
-				.editListing(new BN(newPriceLamports))
-				.accounts({
-					authority: this.provider.publicKey,
-					authorityTokenAccount: userTokenAcc,
-					mint,
-					assetManager,
-					vaultTokenAccount,
-					listingData: listingDataAcc,
-					tokenProgram: TOKEN_PROGRAM_ID,
-					systemProgram: SystemProgram.programId,
-				})
-				.instruction();
-
-			return ix;
-		} catch (err) {
-			throw new Error(`error during Edit Listing: ${err}`);
-		}
-	}
+	// 		return ix;
+	// 	} catch (err) {
+	// 		throw new Error(`error during Edit Listing: ${err}`);
+	// 	}
+	// }
 
 	/**
-	 * Cancel a Listing made on the soundwork marketplace
-	 * @param {PublicKey} mint - the mint address of the NFT.
+	 * Unlist a collectible from our marketplace
+	 * @param {PublicKey} asset - the asset address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error deleting the listing or if the response contains an error // todo
 	 */
-	public async deleteListing(
-		mint: PublicKey
+	public async unlistAsset(
+		asset: PublicKey
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const listingDataAcc = findListingDataAcc(mint);
-		const assetManager = findAssetManagerAcc();
-		const vaultTokenAccount = findVaultTokenAcc(mint, assetManager);
-
-		// derive user's ATA account
-		let userTokenAcc = getAssociatedTokenAddressSync(
-			mint,
-			this.provider.publicKey
-		);
-
 		try {
 			let ix = await this.program.methods
-				.deleteListing()
+				.unlistAsset()
 				.accounts({
-					authority: this.provider.publicKey,
-					authorityTokenAccount: userTokenAcc,
-					mint,
-					assetManager,
-					vaultTokenAccount,
-					listingData: listingDataAcc,
-					tokenProgram: TOKEN_PROGRAM_ID,
+					payer: this.provider.publicKey,
+					asset,
+					listingData: findListingDataAddress(asset),
+					assetManager: findAssetManagerAddress(),
+					coreProgram: CORE_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
 				})
 				.instruction();
@@ -209,43 +185,104 @@ export class SoundworkListSDK {
 
 	// --------------------------------------- trade methods. (buy / sell)
 	/**
-	 * Buy an NFT Listed on the soundwork marketplace
-	 * @param {PublicKey} mint - the mint address of the Listed NFT.
+	 * Buy an NFT Listed on the soundwork marketplace using native sol
+	 * @param {PublicKey} asset - the asset address of the listed collectible.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
 	 */
-	public async buyListing(mint: PublicKey): Promise<TransactionInstruction> {
+	public async buyListingNative(
+		asset: PublicKey
+	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const listingDataAcc = findListingDataAcc(mint);
-		const assetManager = findAssetManagerAcc();
-		const vaultTokenAccount = findVaultTokenAcc(mint, assetManager);
-
-		// derive buyer's ATA account
-		let buyerTokenAccount = getAssociatedTokenAddressSync(
-			mint,
-			this.provider.publicKey
-		);
-
-		let listingData = await this.program.account.listingDataV1.fetch(
-			listingDataAcc
+		let listingDataAddress = findListingDataAddress(asset);
+		let listingData = await this.program.account.listingData.fetch(
+			listingDataAddress
 		);
 
 		try {
 			let ix = await this.program.methods
-				.buyListing(null)
+				.buyAsset(null)
 				.accounts({
 					payer: this.provider.publicKey,
 					buyer: this.provider.publicKey,
-					ogOwner: listingData.owner,
-					escrowWalletAsBuyer: null,
-					buyerTokenAccount,
-					mint,
-					assetManager,
-					vaultTokenAccount,
-					listingData: listingDataAcc,
+					seller: listingData.authority,
+					walletAsBuyer: null,
+					asset,
+					paymentMint: null,
+					walletTokenAccount: null,
+					buyerTokenAccount: null,
+					sellerTokenAccount: null,
+					treasuryTokenAccount: null,
+					treasury: TREASURY_ADDRESS, // ! update to correct address
+					listingData: listingDataAddress,
+					assetManager: findAssetManagerAddress(),
+					marketplaceConfig: findMarketplaceConfigAddress(),
+					coreProgram: CORE_PROGRAM_ID,
+					tokenProgram: TOKEN_PROGRAM_ID,
+					systemProgram: SystemProgram.programId,
+				})
+				.instruction();
+
+			return ix;
+		} catch (err) {
+			throw new Error(`error during Buy Listing: ${err}`);
+		}
+	}
+
+	// --------------------------------------- trade methods. (buy / sell)
+	/**
+	 * Buy an NFT Listed on the soundwork marketplace using SPL Tokens
+	 * @param {PublicKey} asset - the asset address of the listed collectible.
+	 * @param {PublicKey} paymentMint - the mint address of SPL token seller wants to be paid in.
+	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+	 * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
+	 */
+	public async buyListingSPL(
+		asset: PublicKey,
+		paymentMint: PublicKey
+	): Promise<TransactionInstruction> {
+		if (!this.provider.publicKey) {
+			throw Error("Expected public key not found");
+		}
+
+		const listingDataAddress = findListingDataAddress(asset);
+
+		let listingData = await this.program.account.listingData.fetch(
+			listingDataAddress
+		);
+
+		try {
+			let ix = await this.program.methods
+				.buyAsset(null)
+				.accounts({
+					payer: this.provider.publicKey,
+					buyer: this.provider.publicKey,
+					seller: listingData.authority,
+					walletAsBuyer: null,
+
+					asset,
+					paymentMint,
+					walletTokenAccount: null,
+					buyerTokenAccount: getAssociatedTokenAddressSync(
+						paymentMint,
+						this.provider.publicKey
+					),
+					sellerTokenAccount: getAssociatedTokenAddressSync(
+						paymentMint,
+						listingData.authority
+					),
+					treasuryTokenAccount: getAssociatedTokenAddressSync(
+						paymentMint,
+						TREASURY_ADDRESS
+					), // ! update to correct address
+					treasury: TREASURY_ADDRESS, // ! update to correct address
+					listingData: listingDataAddress,
+					assetManager: findAssetManagerAddress(),
+					marketplaceConfig: findMarketplaceConfigAddress(),
+					coreProgram: CORE_PROGRAM_ID,
 					tokenProgram: TOKEN_PROGRAM_ID,
 					associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
@@ -259,24 +296,22 @@ export class SoundworkListSDK {
 	}
 
 	// --------------------------------------- Escrow methods. (withdraw/deposit)
+
 	/**
-	 * Deposit SOL into Escrow owned by the soundwork marketplace contract
-	 * @param {number} lamports - the amount in lamports you are depositing into the escrow.
+	 * Initialize user's Escrow wallet owned by soundwork list program.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} throw an error if we encounter a failure
 	 */
-	public async depositSol(lamports: number): Promise<TransactionInstruction> {
+	public async initUserEscrowWallet(): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const solEscrowWallet = findUserEscrowWallet(this.provider.publicKey);
-
 		let ix = await this.program.methods
-			.depositSol(new BN(lamports))
+			.initUserEscrowWallet()
 			.accounts({
-				owner: this.provider.publicKey,
-				solEscrowWallet,
+				authority: this.provider.publicKey,
+				wallet: findWalletAddress(this.provider.publicKey),
 				systemProgram: SystemProgram.programId,
 			})
 			.instruction();
@@ -285,26 +320,124 @@ export class SoundworkListSDK {
 	}
 
 	/**
-	 * Deposit SOL into Escrow owned by the soundwork marketplace contract
-	 * @param {number} lamports - the amount in lamports you'd like to withdraw from the escrow.
+	 * Deposit SOL into  user's Escrow wallet owned by soundwork list program.
+	 * @param {BN} amount - the amount in lamports you are depositing into the escrow.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} throw an error if we encounter a failure
 	 */
-	public async withDrawSol(
-		lamports: number
+	public async depositSol(amount: BN): Promise<TransactionInstruction> {
+		if (!this.provider.publicKey) {
+			throw Error("Expected public key not found");
+		}
+
+		let ix = await this.program.methods
+			.depositSol(amount)
+			.accounts({
+				authority: this.provider.publicKey,
+				wallet: findWalletAddress(this.provider.publicKey),
+				systemProgram: SystemProgram.programId,
+			})
+			.instruction();
+
+		return ix;
+	}
+
+	/**
+	 * Withdraw SOL into  user's Escrow wallet owned by soundwork list program.
+	 * @param {BN} amount - the amount in lamports you'd like to withdraw from the escrow.
+	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+	 * @throws {Error} throw an error if we encounter a failure
+	 */
+	public async withDrawSol(amount: BN): Promise<TransactionInstruction> {
+		if (!this.provider.publicKey) {
+			throw Error("Expected public key not found");
+		}
+
+		let ix = await this.program.methods
+			.withdrawSol(amount)
+			.accounts({
+				payer: this.provider.publicKey,
+				authority: this.provider.publicKey,
+				wallet: findWalletAddress(this.provider.publicKey),
+				systemProgram: SystemProgram.programId,
+			})
+			.instruction();
+
+		return ix;
+	}
+
+	/**
+	 * Deposits a specific SPL token (e.g., USDC) into  user's Escrow wallet.
+	 * @param {BN} amount - the amount of tokens you are depositing into the escrow.
+	 * @param {PublicKey}  mint - the SPL token mint address user wants to deposit.
+	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+	 * @throws {Error} throw an error if we encounter a failure
+	 */
+	public async depositSPLToken(
+		amount: BN,
+		mint: PublicKey
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const solEscrowWallet = findUserEscrowWallet(this.provider.publicKey);
+		let ix = await this.program.methods
+			.depositToken({ amount }) // with 6 decimals, this is 1 USDC dev coin
+			.accounts({
+				authority: this.provider.publicKey,
+				wallet: findWalletAddress(this.provider.publicKey),
+				mint,
+				authorityTokenAccount: getAssociatedTokenAddressSync(
+					mint,
+					this.provider.publicKey
+				),
+				walletTokenAccount: getAssociatedTokenAddressSync(
+					mint,
+					findWalletAddress(this.provider.publicKey),
+					true
+				),
+				tokenProgram: TOKEN_PROGRAM_ID,
+				associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
+				systemProgram: SystemProgram.programId,
+			})
+			.instruction();
+
+		return ix;
+	}
+
+	/**
+	 * Withdraws a specific SPL token (e.g., USDC) from the user's Escrow wallet.
+	 * @param {BN} amount - the amount of tokens you are depositing into the escrow.
+	 * @param {PublicKey}  mint - the SPL token mint address user wants to deposit.
+	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
+	 * @throws {Error} throw an error if we encounter a failure
+	 */
+	public async withdrawSPLToken(
+		amount: BN,
+		mint: PublicKey
+	): Promise<TransactionInstruction> {
+		if (!this.provider.publicKey) {
+			throw Error("Expected public key not found");
+		}
 
 		let ix = await this.program.methods
-			.withdrawSol(new BN(lamports))
+			.withdrawToken({ amount })
 			.accounts({
 				payer: this.provider.publicKey,
 				authority: this.provider.publicKey,
-				solEscrowWallet: solEscrowWallet,
+				wallet: findWalletAddress(this.provider.publicKey),
+				mint,
+				authorityTokenAccount: getAssociatedTokenAddressSync(
+					mint,
+					this.provider.publicKey
+				),
+				walletTokenAccount: getAssociatedTokenAddressSync(
+					mint,
+					findWalletAddress(this.provider.publicKey),
+					true
+				),
+				tokenProgram: TOKEN_PROGRAM_ID,
+				associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
 				systemProgram: SystemProgram.programId,
 			})
 			.instruction();

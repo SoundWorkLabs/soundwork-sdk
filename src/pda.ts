@@ -1,76 +1,83 @@
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
-import { SOUNDWORK_LIST_PROGRAM_ID, SOUNDWORK_BID_PROGRAM_ID } from "./constants";
+import {
+	ASSET_MANAGER_PREFIX,
+	SEED_BID_DATA,
+	SEED_LISTING_DATA,
+	SEED_MARKETPLACE_CONFIG,
+	SEED_PREFIX,
+	SEED_WALLET,
+	SOUNDWORK_BID_PROGRAM_ID,
+	SOUNDWORK_LIST_PROGRAM_ID,
+} from "./constants";
 
 /**
-  * Derive the listing data account address
-  * @param {PublicKey} nftMint - the mint address of the NFT.
-  * @returns {PublicKey} The address of the derived account.
-  */
-export function findListingDataAcc(nftMint: PublicKey): PublicKey {
-	const [listingDataAcc] = PublicKey.findProgramAddressSync(
-		[nftMint.toBuffer(), Buffer.from("ryo")],
+ * Derive the asset manager account address
+ * @returns {PublicKey} The asset Manager Address.
+ */
+export const findAssetManagerAddress = (): PublicKey => {
+	return PublicKey.findProgramAddressSync(
+		[Buffer.from(SEED_PREFIX), Buffer.from(ASSET_MANAGER_PREFIX)],
 		SOUNDWORK_LIST_PROGRAM_ID
-	);
-
-	return listingDataAcc;
-}
+	)[0];
+};
 
 /**
-  * Derive the AssetManager address for the listing program.
-  * The AssetManager manages all tokens on the listing program.
-  * @returns {PublicKey} The address for the AssetManager.
-  */
-export function findAssetManagerAcc(): PublicKey {
-	const [assetManager] = PublicKey.findProgramAddressSync(
-		[Buffer.from("soundwork")],
+ * Derive the marketplace config account
+ * @returns {PublicKey} listingData Address.
+ */
+export const findMarketplaceConfigAddress = (): PublicKey => {
+	return PublicKey.findProgramAddressSync(
+		[Buffer.from(SEED_PREFIX), Buffer.from(SEED_MARKETPLACE_CONFIG)],
 		SOUNDWORK_LIST_PROGRAM_ID
-	);
-
-	return assetManager;
-}
+	)[0];
+};
 
 /**
-  * Derive the ATA for the Listing program AssetManager.
-  * @param {PublicKey} nftMint - the mint of the token.
-  * @returns {PublicKey} The Associated Token Address for the nft.
-  */
-export function findVaultTokenAcc(
-	nftMint: PublicKey,
-	assetManager: PublicKey
-): PublicKey {
-	let vaultTokenAccount = getAssociatedTokenAddressSync(
-		nftMint,
-		assetManager,
-		true
-	);
-
-	return vaultTokenAccount;
-}
-
-/**
-  * Derive the SOL escrow address.
-  * @param {PublicKey} address - the address for which the listing address is to be derived.
-  * @returns {PublicKey} The address of the derived escrow.
-  */
-export function findUserEscrowWallet(address: PublicKey): PublicKey {
-	const [userEscrowWaller] = PublicKey.findProgramAddressSync(
-		[address.toBuffer(), Buffer.from("Hitori")],
+ * Derive the listing data account address
+ * @param asset Asset address
+ * @returns {PublicKey} listingData Address.
+ */
+export const findListingDataAddress = (asset: PublicKey): PublicKey => {
+	return PublicKey.findProgramAddressSync(
+		[
+			Buffer.from(SEED_PREFIX),
+			Buffer.from(SEED_LISTING_DATA),
+			asset.toBuffer(),
+		],
 		SOUNDWORK_LIST_PROGRAM_ID
-	)
-	return userEscrowWaller;
-}
+	)[0];
+};
 
 /**
-  * Derive the bidding data account address
-  * @param {PublicKey} nftMint - the mint address of the NFT.
-  * @returns {PublicKey} The address of the derived account.
-  */
-export function findBiddingDataAcc(nftMint: PublicKey): PublicKey {
-	const [biddingDataAcc] = PublicKey.findProgramAddressSync(
-		[nftMint.toBuffer(), Buffer.from("Ikuyo")],
+ * Derive the user wallet escrow address
+ * @param authority user's address
+ * @returns {PublicKey} listingData Address.
+ */
+export const findWalletAddress = (authority: PublicKey): PublicKey => {
+	return PublicKey.findProgramAddressSync(
+		[
+			Buffer.from(SEED_PREFIX),
+			Buffer.from(SEED_WALLET),
+			authority.toBuffer(),
+		],
+		SOUNDWORK_LIST_PROGRAM_ID
+	)[0];
+};
+
+/**
+ * Derive the bid data account address
+ *
+ * @param asset asset's address
+ *
+ * @returns {PublicKey} The bid data Address.
+ */
+export const findBidDataAddress = (asset: PublicKey): PublicKey => {
+	return PublicKey.findProgramAddressSync(
+		[
+			Buffer.from(SEED_PREFIX),
+			Buffer.from(SEED_BID_DATA),
+			asset.toBuffer(),
+		],
 		SOUNDWORK_BID_PROGRAM_ID
-	)
-
-	return biddingDataAcc;
-}
+	)[0];
+};

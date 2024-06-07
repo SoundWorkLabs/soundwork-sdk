@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/SoundWorkLabs/soundwork-sdk.git"
 	},
-	"homepage": "https://github.com/SoundWorkLabs/xnft/soundwork-sdk#readme",
+	"homepage": "https://github.com/SoundWorkLabs/soundwork-sdk#readme",
 	"keywords": [
 		"soundwork",
 		"web3",
@@ -20,8 +20,8 @@
 	],
 	"scripts": {
 		"build:ts": "rm -rf ./dist && tsc",
-		"update-list-idl": "cp ../market-contracts/target/types/soundwork_list.ts src/soundwork-list/idl",
-		"update-bid-idl": "cp ../market-contracts/target/types/soundwork_bid.ts src/soundwork-bid/idl",
+		"update-list-idl": "cp ../marketplace-contracts/target/types/soundwork_list.ts src/soundwork-list/idl",
+		"update-bid-idl": "cp ../marketplace-contracts/target/types/soundwork_bid.ts src/soundwork-bid/idl",
 		"update-idl": "pnpm run update-list-idl && pnpm run update-bid-idl",
 		"test": "jest --runInBand --forceExit --coverage --verbose"
 	},
