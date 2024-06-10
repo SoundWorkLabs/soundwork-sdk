@@ -105,7 +105,7 @@ export class SoundworkBidSDK {
 		asset: PublicKey,
 		amount: BN,
 		expiryTs: BN,
-		mint?: PublicKey
+		mint: PublicKey | null
 	) {
 		if (!this.bidderProvider.publicKey) {
 			throw Error("Expected public key not found");
@@ -166,7 +166,7 @@ export class SoundworkBidSDK {
 		asset: PublicKey,
 		amount: BN | null,
 		expiryTs: BN | null,
-		mint?: PublicKey
+		mint: PublicKey | null
 	): Promise<TransactionInstruction> {
 		if (!this.bidderProvider.publicKey) {
 			throw Error("Expected public key not found");
@@ -222,7 +222,7 @@ export class SoundworkBidSDK {
 	 */
 	async acceptBid(
 		asset: PublicKey,
-		mint?: PublicKey
+		mint: PublicKey | null
 	): Promise<TransactionInstruction> {
 		if (!this.sellerProvider?.publicKey) {
 			throw Error("Expected public key not found");
@@ -286,7 +286,7 @@ export class SoundworkBidSDK {
 	 */
 	async rejectBid(
 		asset: PublicKey,
-		mint?: PublicKey
+		mint: PublicKey | null
 	): Promise<TransactionInstruction> {
 		if (!this.sellerProvider?.publicKey) {
 			throw Error("Expected public key not found");
@@ -338,7 +338,7 @@ export class SoundworkBidSDK {
 	 */
 	async revokeBid(
 		asset: PublicKey,
-		mint?: PublicKey
+		mint: PublicKey | null
 	): Promise<TransactionInstruction> {
 		if (!this.bidderProvider?.publicKey) {
 			throw Error("Expected public key not found");

@@ -1,31 +1,31 @@
 import { PublicKey } from "@solana/web3.js";
 /**
-  * Derive the listing data account address
-  * @param {PublicKey} nftMint - the mint address of the NFT.
-  * @returns {PublicKey} The address of the derived account.
-  */
-export declare function findListingDataAcc(nftMint: PublicKey): PublicKey;
+ * Derive the asset manager account address
+ * @returns {PublicKey} The asset Manager Address.
+ */
+export declare const findAssetManagerAddress: () => PublicKey;
 /**
-  * Derive the AssetManager address for the listing program.
-  * The AssetManager manages all tokens on the listing program.
-  * @returns {PublicKey} The address for the AssetManager.
-  */
-export declare function findAssetManagerAcc(): PublicKey;
+ * Derive the marketplace config account
+ * @returns {PublicKey} listingData Address.
+ */
+export declare const findMarketplaceConfigAddress: () => PublicKey;
 /**
-  * Derive the ATA for the Listing program AssetManager.
-  * @param {PublicKey} nftMint - the mint of the token.
-  * @returns {PublicKey} The Associated Token Address for the nft.
-  */
-export declare function findVaultTokenAcc(nftMint: PublicKey, assetManager: PublicKey): PublicKey;
+ * Derive the listing data account address
+ * @param asset Asset address
+ * @returns {PublicKey} listingData Address.
+ */
+export declare const findListingDataAddress: (asset: PublicKey) => PublicKey;
 /**
-  * Derive the SOL escrow address.
-  * @param {PublicKey} address - the address for which the listing address is to be derived.
-  * @returns {PublicKey} The address of the derived escrow.
-  */
-export declare function findUserEscrowWallet(address: PublicKey): PublicKey;
+ * Derive the user wallet escrow address
+ * @param authority user's address
+ * @returns {PublicKey} listingData Address.
+ */
+export declare const findWalletAddress: (authority: PublicKey) => PublicKey;
 /**
-  * Derive the bidding data account address
-  * @param {PublicKey} nftMint - the mint address of the NFT.
-  * @returns {PublicKey} The address of the derived account.
-  */
-export declare function findBiddingDataAcc(nftMint: PublicKey): PublicKey;
+ * Derive the bid data account address
+ *
+ * @param asset asset's address
+ *
+ * @returns {PublicKey} The bid data Address.
+ */
+export declare const findBidDataAddress: (asset: PublicKey) => PublicKey;

@@ -64,7 +64,7 @@ export class SoundworkListSDK {
 	 * @returns {Promise<IdlAccounts<SoundworkList>["listingData"]>} a promise that resolves to the data inside the listingDataV1 account
 	 * @throws {Error} if there is an error fetching the details or if the response contains an error
 	 */
-	async fetchListDataByMint(
+	async fetchListDataByAddress(
 		asset: PublicKey
 	): Promise<IdlAccounts<SoundworkList>["listingData"]> {
 		try {
@@ -184,65 +184,18 @@ export class SoundworkListSDK {
 	}
 
 	// --------------------------------------- trade methods. (buy / sell)
+
 	/**
-	 * Buy an NFT Listed on the soundwork marketplace using native sol
+	 * Buy an NFT Listed on the soundwork marketplace
+	 *
 	 * @param {PublicKey} asset - the asset address of the listed collectible.
+	 * @param {PublicKey}  [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
 	 */
-	public async buyListingNative(
-		asset: PublicKey
-	): Promise<TransactionInstruction> {
-		if (!this.provider.publicKey) {
-			throw Error("Expected public key not found");
-		}
-
-		let listingDataAddress = findListingDataAddress(asset);
-		let listingData = await this.program.account.listingData.fetch(
-			listingDataAddress
-		);
-
-		try {
-			let ix = await this.program.methods
-				.buyAsset(null)
-				.accounts({
-					payer: this.provider.publicKey,
-					buyer: this.provider.publicKey,
-					seller: listingData.authority,
-					walletAsBuyer: null,
-					asset,
-					paymentMint: null,
-					walletTokenAccount: null,
-					buyerTokenAccount: null,
-					sellerTokenAccount: null,
-					treasuryTokenAccount: null,
-					treasury: TREASURY_ADDRESS, // ! update to correct address
-					listingData: listingDataAddress,
-					assetManager: findAssetManagerAddress(),
-					marketplaceConfig: findMarketplaceConfigAddress(),
-					coreProgram: CORE_PROGRAM_ID,
-					tokenProgram: TOKEN_PROGRAM_ID,
-					systemProgram: SystemProgram.programId,
-				})
-				.instruction();
-
-			return ix;
-		} catch (err) {
-			throw new Error(`error during Buy Listing: ${err}`);
-		}
-	}
-
-	// --------------------------------------- trade methods. (buy / sell)
-	/**
-	 * Buy an NFT Listed on the soundwork marketplace using SPL Tokens
-	 * @param {PublicKey} asset - the asset address of the listed collectible.
-	 * @param {PublicKey} paymentMint - the mint address of SPL token seller wants to be paid in.
-	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
-	 * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
-	 */
-	public async buyListingSPL(
+	public async buyListing(
 		asset: PublicKey,
-		paymentMint: PublicKey
+		mint: PublicKey | null
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
@@ -264,20 +217,23 @@ export class SoundworkListSDK {
 					walletAsBuyer: null,
 
 					asset,
-					paymentMint,
+					paymentMint: mint,
 					walletTokenAccount: null,
-					buyerTokenAccount: getAssociatedTokenAddressSync(
-						paymentMint,
-						this.provider.publicKey
-					),
-					sellerTokenAccount: getAssociatedTokenAddressSync(
-						paymentMint,
-						listingData.authority
-					),
-					treasuryTokenAccount: getAssociatedTokenAddressSync(
-						paymentMint,
-						TREASURY_ADDRESS
-					), // ! update to correct address
+					buyerTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								this.provider.publicKey
+						  )
+						: null,
+					sellerTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								listingData.authority
+						  )
+						: null,
+					treasuryTokenAccount: mint
+						? getAssociatedTokenAddressSync(mint, TREASURY_ADDRESS)
+						: null, // ! update to correct address
 					treasury: TREASURY_ADDRESS, // ! update to correct address
 					listingData: listingDataAddress,
 					assetManager: findAssetManagerAddress(),

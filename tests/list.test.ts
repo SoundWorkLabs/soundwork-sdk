@@ -10,14 +10,15 @@ import { SoundworkListSDK } from "../src/soundwork-list/main";
 
 // test utils
 import {
-	setProvider,
-	nftMint,
-	userKeypair,
+	asset,
+	BONK_DEV_MINT,
 	buyerKeypair,
-	sleep,
 	connection,
-	setSellerProvider,
 	setBuyerProvider,
+	setProvider,
+	setSellerProvider,
+	sleep,
+	userKeypair,
 } from "./testUtils";
 
 describe("SOUNDWORK LIST SDK TEST", () => {
@@ -25,18 +26,15 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 
 	describe("SELLER TESTS", () => {
 		// let provider = setSellerProvider();
-    
 		// beforeAll(() => {
 		// 	listSDK = new SoundworkListSDK(provider, connection);
 		// });
-
 		// it("should fail fetching listed NFT data for an account that does not exist", async () => {
 		// 	try {
 		// 		let nonExistentMint = new PublicKey(
 		// 			"DY73PC8Dmr2nYXmrMcJG4hxKhXTMSo5kKfG89iLjY1G8"
 		// 		);
-		// 		await listSDK.fetchListDataByMint(nonExistentMint);
-
+		// 		await listSDK.fetchListDataByAddress(nonExistentMint);
 		// 		fail("Expected an error to be thrown, but it didn't.");
 		// 	} catch (error: any) {
 		// 		console.log("error trying to fetch non existent account: ", error);
@@ -46,42 +44,46 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 		// );
 		// 	}
 		// }, 60000);
-
-		// it("should create a listing", async () => {
-		// let ix = await listSDK.createListing(nftMint, 1);
-		// let tx = new Transaction().add(ix);
-		// let txSig = await sendAndConfirmTransaction(provider.connection, tx, [
-		// 	userKeypair,
-		// ]);
-		// expect(txSig).toBeDefined();
-		// console.log(
-		// 	`create listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-		// );
-		// 	await sleep(4000); // Delay
-		// }, 60000);
-
-		// it('should edit a listing', async () => {
-		// 	await sleep(4000); // Delay
-		// 	let ix = await listSDK.editListing(nftMint, 20);
+		// it("should create a listing with SPL Token", async () => {
+		// 	// one bonk
+		// 	let ix = await listSDK.listAsset(asset, new BN(1_000_000_000), {
+		// 		token: { mint: BONK_DEV_MINT },
+		// 	});
 		// 	let tx = new Transaction().add(ix);
-		// 	let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
+		// 	let txSig = await sendAndConfirmTransaction(
+		// 		provider.connection,
+		// 		tx,
+		// 		[userKeypair]
+		// 	);
 		// 	expect(txSig).toBeDefined();
 		// 	console.log(
-		// 		`edit listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// 		`create listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
 		// 	);
-		// }, 60000);
-
-		// it('delete listed NFT and close listing data account', async () => {
 		// 	await sleep(4000); // Delay
-
-		// let ix = await listSDK.deleteListing(nftMint);
-		// let tx = new Transaction().add(ix);
-		// let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
-
-		// expect(txSig).toBeDefined();
-		// console.log(
-		// 	`delete listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-		// );
+		// }, 60000);
+		// 		// it('should edit a listing', async () => {
+		// 		// 	await sleep(4000); // Delay
+		// 		// 	let ix = await listSDK.editListing(nftMint, 20);
+		// 		// 	let tx = new Transaction().add(ix);
+		// 		// 	let txSig = await sendAndConfirmTransaction(provider.connection, tx, [userKeypair])
+		// 		// 	expect(txSig).toBeDefined();
+		// 		// 	console.log(
+		// 		// 		`edit listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// 		// 	);
+		// 		// }, 60000);
+		// it("unlist listed asset and close listing data account", async () => {
+		// 	await sleep(4000); // Delay
+		// 	let ix = await listSDK.unlistAsset(asset);
+		// 	let tx = new Transaction().add(ix);
+		// 	let txSig = await sendAndConfirmTransaction(
+		// 		provider.connection,
+		// 		tx,
+		// 		[userKeypair]
+		// 	);
+		// 	expect(txSig).toBeDefined();
+		// 	console.log(
+		// 		`delete listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// 	);
 		// }, 60000);
 	});
 
@@ -92,11 +94,17 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 	// 		listSDK = new SoundworkListSDK(provider, connection);
 	// 	});
 
-	// 	it('buy a listed NFT and close listing data account', async () => {
+	// 	it("buy a listed NFT and close listing data account", async () => {
 	// 		await sleep(4000); // Delay
-	// 		let ix = await listSDK.buyListing(nftMint);
+	// 		// let ix = await listSDK.buyListing(asset, null); // when using native sol to pay
+	// 		let ix = await listSDK.buyListing(asset, BONK_DEV_MINT);
+
 	// 		let tx = new Transaction().add(ix);
-	// 		let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
+	// 		let txSig = await sendAndConfirmTransaction(
+	// 			provider.connection,
+	// 			tx,
+	// 			[buyerKeypair]
+	// 		);
 	// 		expect(txSig).toBeDefined();
 	// 		console.log(
 	// 			`buy listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`

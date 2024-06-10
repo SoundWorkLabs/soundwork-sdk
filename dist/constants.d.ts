@@ -1,3 +1,12 @@
 import { PublicKey } from "@solana/web3.js";
 export declare const SOUNDWORK_LIST_PROGRAM_ID: PublicKey;
 export declare const SOUNDWORK_BID_PROGRAM_ID: PublicKey;
+export declare const SOUNDWORK_CREATE_PROGRAM_ID: PublicKey;
+export declare const CORE_PROGRAM_ID: PublicKey;
+export declare const TREASURY_ADDRESS: PublicKey;
+export declare const SEED_PREFIX = "Kessoku";
+export declare const ASSET_MANAGER_PREFIX = "Seika";
+export declare const SEED_LISTING_DATA = "Hitori";
+export declare const SEED_MARKETPLACE_CONFIG = "Ijichi";
+export declare const SEED_WALLET = "Yamada";
+export declare const SEED_BID_DATA = "Futari";
