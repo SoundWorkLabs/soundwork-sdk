@@ -46,9 +46,9 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// }, 60000);
 		// it("should create a listing with SPL Token", async () => {
 		// 	// one bonk
-		// 	let ix = await listSDK.listAsset(asset, new BN(1_000_000_000), {
-		// 		token: { mint: BONK_DEV_MINT },
-		// 	});
+		// let ix = await listSDK.listAsset(asset, new BN(1_000_000_000), {
+		// 	token: { mint: BONK_DEV_MINT },
+		// });
 		// 	let tx = new Transaction().add(ix);
 		// 	let txSig = await sendAndConfirmTransaction(
 		// 		provider.connection,

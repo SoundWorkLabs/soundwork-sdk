@@ -14,7 +14,6 @@ import {
 
 import {
 	CORE_PROGRAM_ID,
-	SOUNDWORK_BID_PROGRAM_ID,
 	SOUNDWORK_LIST_PROGRAM_ID,
 	TREASURY_ADDRESS,
 } from "../constants";
@@ -25,7 +24,8 @@ import {
 	findMarketplaceConfigAddress,
 	findWalletAddress,
 } from "../pda";
-import { SoundworkBid, IDL as soundworkIDL } from "./idl/soundwork_bid";
+import type { SoundworkBid } from "./idl/soundwork_bid";
+import * as soundworkBidIDL from "./idl/soundwork_bid.json";
 
 /**
  * This is the base level class for interfacing with the Soundwork bidding contract.
@@ -58,8 +58,7 @@ export class SoundworkBidSDK {
 		this.sellerProvider = sellerProvider;
 
 		this.program = new Program<SoundworkBid>(
-			soundworkIDL,
-			SOUNDWORK_BID_PROGRAM_ID,
+			soundworkBidIDL as unknown as SoundworkBid,
 			bidderProvider
 		);
 	}
@@ -121,7 +120,7 @@ export class SoundworkBidSDK {
 					amount,
 					expiryTs,
 				})
-				.accounts({
+				.accountsStrict({
 					bidder: this.bidderProvider.publicKey,
 					asset,
 					bidData: findBidDataAddress(asset),
@@ -144,6 +143,7 @@ export class SoundworkBidSDK {
 					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
 					associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
+					tokenProgram: TOKEN_PROGRAM_ID,
 				})
 				.instruction();
 
@@ -179,7 +179,7 @@ export class SoundworkBidSDK {
 		try {
 			let ix = await this.program.methods
 				.editBid({ amount, expiryTs })
-				.accounts({
+				.accountsStrict({
 					bidder: this.bidderProvider.publicKey,
 					asset,
 					bidData: findBidDataAddress(asset),
@@ -216,13 +216,15 @@ export class SoundworkBidSDK {
 	 * Owner Accepts a bid. This transfers the NFT to bidder and the escrowed funds to the NFT lister.
 	 *
 	 * @param {PublicKey} asset - the address of the asset.
-	 * @param {PublicKey} [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null} [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null} [collection] - Optional. collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if unsuccessful.
 	 */
 	async acceptBid(
 		asset: PublicKey,
-		mint: PublicKey | null
+		mint: PublicKey | null,
+		collection: PublicKey | null = null
 	): Promise<TransactionInstruction> {
 		if (!this.sellerProvider?.publicKey) {
 			throw Error("Expected public key not found");
@@ -236,7 +238,7 @@ export class SoundworkBidSDK {
 		try {
 			let ix = await this.program.methods
 				.acceptBid()
-				.accounts({
+				.accountsStrict({
 					seller,
 					bidder,
 					asset,
@@ -268,6 +270,7 @@ export class SoundworkBidSDK {
 					tokenProgram: TOKEN_PROGRAM_ID,
 					associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
+					collection,
 				})
 				.instruction();
 
@@ -280,7 +283,7 @@ export class SoundworkBidSDK {
 	/**
 	 * Reject a bid from a bidder.
 	 * @param {PublicKey} asset - the asset address of the collectible.
-	 * @param {PublicKey} [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null} [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if  unsuccessful.
 	 */
@@ -297,7 +300,7 @@ export class SoundworkBidSDK {
 		try {
 			let ix = await this.program.methods
 				.rejectBid()
-				.accounts({
+				.accountsStrict({
 					seller: this.sellerProvider.publicKey,
 					bidder: bidData.authority,
 					asset,
@@ -332,7 +335,7 @@ export class SoundworkBidSDK {
 	 * Revoke bid placed on a core asset.
 	 *
 	 * @param {PublicKey} asset - the asset address of the collectible.
-	 * @param {PublicKey} [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null} [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if unsuccessful.
 	 */
@@ -349,7 +352,7 @@ export class SoundworkBidSDK {
 		try {
 			let ix = await this.program.methods
 				.revokeBid()
-				.accounts({
+				.accountsStrict({
 					bidder,
 					asset,
 					bidData: findBidDataAddress(asset),

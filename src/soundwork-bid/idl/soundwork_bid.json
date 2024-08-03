@@ -1,13 +1,7 @@
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/soundwork_bid.json`.
- */
-export type SoundworkBid = {
+{
   "address": "4mFDYND4AVREYEJXCPhjq1LnbjELHHebJqG3NZechA7X",
   "metadata": {
-    "name": "soundworkBid",
+    "name": "soundwork_bid",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
@@ -18,7 +12,7 @@ export type SoundworkBid = {
   ],
   "instructions": [
     {
-      "name": "acceptBid",
+      "name": "accept_bid",
       "docs": [
         "Accept placed bid",
         ""
@@ -53,39 +47,39 @@ export type SoundworkBid = {
           "optional": true
         },
         {
-          "name": "bidData",
+          "name": "bid_data",
           "writable": true
         },
         {
-          "name": "bidderEscrowWallet",
+          "name": "bidder_escrow_wallet",
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "paymentMint",
+          "name": "payment_mint",
           "writable": true,
           "optional": true
         },
         {
-          "name": "bidderTokenAccount",
+          "name": "bidder_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "sellerTokenAccount",
+          "name": "seller_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "treasuryTokenAccount",
+          "name": "treasury_token_account",
           "writable": true,
           "optional": true
         },
@@ -94,36 +88,36 @@ export type SoundworkBid = {
           "writable": true
         },
         {
-          "name": "assetManager"
+          "name": "asset_manager"
         },
         {
-          "name": "marketplaceConfig"
+          "name": "marketplace_config"
         },
         {
-          "name": "soundworkList",
+          "name": "soundwork_list",
           "address": "EA4ptgF3TYjDBGYJApAoZoyCbCYw6P5mGU5noCe1Z97"
         },
         {
-          "name": "coreProgram",
+          "name": "core_program",
           "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "editBid",
+      "name": "edit_bid",
       "docs": [
         "Edit a placed bid on Soundwork",
         ""
@@ -149,46 +143,46 @@ export type SoundworkBid = {
           "writable": true
         },
         {
-          "name": "bidData",
+          "name": "bid_data",
           "writable": true
         },
         {
-          "name": "bidderEscrowWallet",
+          "name": "bidder_escrow_wallet",
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "paymentMint",
+          "name": "payment_mint",
           "writable": true,
           "optional": true
         },
         {
-          "name": "bidderTokenAccount",
+          "name": "bidder_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "soundworkList",
+          "name": "soundwork_list",
           "address": "EA4ptgF3TYjDBGYJApAoZoyCbCYw6P5mGU5noCe1Z97"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -197,14 +191,14 @@ export type SoundworkBid = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "editBidParams"
+              "name": "EditBidParams"
             }
           }
         }
       ]
     },
     {
-      "name": "makeBid",
+      "name": "make_bid",
       "docs": [
         "Place a bid for a listed MPL Core asset on Soundwork",
         ""
@@ -230,7 +224,7 @@ export type SoundworkBid = {
           "writable": true
         },
         {
-          "name": "bidData",
+          "name": "bid_data",
           "writable": true,
           "pda": {
             "seeds": [
@@ -265,42 +259,42 @@ export type SoundworkBid = {
           }
         },
         {
-          "name": "bidderEscrowWallet",
+          "name": "bidder_escrow_wallet",
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "paymentMint",
+          "name": "payment_mint",
           "writable": true,
           "optional": true
         },
         {
-          "name": "bidderTokenAccount",
+          "name": "bidder_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "soundworkList",
+          "name": "soundwork_list",
           "address": "EA4ptgF3TYjDBGYJApAoZoyCbCYw6P5mGU5noCe1Z97"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -309,14 +303,14 @@ export type SoundworkBid = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "makeBidParams"
+              "name": "MakeBidParams"
             }
           }
         }
       ]
     },
     {
-      "name": "rejectBid",
+      "name": "reject_bid",
       "docs": [
         "Reject placed bid",
         ""
@@ -346,53 +340,53 @@ export type SoundworkBid = {
           "writable": true
         },
         {
-          "name": "bidData",
+          "name": "bid_data",
           "writable": true
         },
         {
-          "name": "bidderEscrowWallet",
+          "name": "bidder_escrow_wallet",
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "paymentMint",
+          "name": "payment_mint",
           "writable": true,
           "optional": true
         },
         {
-          "name": "bidderTokenAccount",
+          "name": "bidder_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "soundworkList",
+          "name": "soundwork_list",
           "address": "EA4ptgF3TYjDBGYJApAoZoyCbCYw6P5mGU5noCe1Z97"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "revokeBid",
+      "name": "revoke_bid",
       "docs": [
         "Revoke placed bid",
         ""
@@ -418,46 +412,46 @@ export type SoundworkBid = {
           "writable": true
         },
         {
-          "name": "bidData",
+          "name": "bid_data",
           "writable": true
         },
         {
-          "name": "bidderEscrowWallet",
+          "name": "bidder_escrow_wallet",
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "paymentMint",
+          "name": "payment_mint",
           "writable": true,
           "optional": true
         },
         {
-          "name": "bidderTokenAccount",
+          "name": "bidder_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "soundworkList",
+          "name": "soundwork_list",
           "address": "EA4ptgF3TYjDBGYJApAoZoyCbCYw6P5mGU5noCe1Z97"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -466,7 +460,7 @@ export type SoundworkBid = {
   ],
   "accounts": [
     {
-      "name": "assetManager",
+      "name": "AssetManager",
       "discriminator": [
         136,
         86,
@@ -479,7 +473,7 @@ export type SoundworkBid = {
       ]
     },
     {
-      "name": "bidData",
+      "name": "BidData",
       "discriminator": [
         75,
         140,
@@ -492,7 +486,7 @@ export type SoundworkBid = {
       ]
     },
     {
-      "name": "listingData",
+      "name": "ListingData",
       "discriminator": [
         5,
         103,
@@ -505,7 +499,7 @@ export type SoundworkBid = {
       ]
     },
     {
-      "name": "marketPlaceConfig",
+      "name": "MarketPlaceConfig",
       "discriminator": [
         183,
         245,
@@ -518,7 +512,7 @@ export type SoundworkBid = {
       ]
     },
     {
-      "name": "wallet",
+      "name": "Wallet",
       "discriminator": [
         24,
         89,
@@ -534,38 +528,38 @@ export type SoundworkBid = {
   "errors": [
     {
       "code": 6000,
-      "name": "unrecognizedSigner",
+      "name": "UnrecognizedSigner",
       "msg": "Signer address does not math the initializer address"
     },
     {
       "code": 6001,
-      "name": "bidExpired",
+      "name": "BidExpired",
       "msg": "Bid TimeStamp Expired"
     },
     {
       "code": 6002,
-      "name": "insufficientFunds",
+      "name": "InsufficientFunds",
       "msg": "Insufficient Funds to make bid for item"
     },
     {
       "code": 6003,
-      "name": "missingAccount",
+      "name": "MissingAccount",
       "msg": "An account required for this operation is missing."
     },
     {
       "code": 6004,
-      "name": "paymentMintAddressMismatch",
+      "name": "PaymentMintAddressMismatch",
       "msg": "The mint address provided does not match seller's provided mint address."
     },
     {
       "code": 6005,
-      "name": "overflow",
+      "name": "Overflow",
       "msg": "Operations resulted in an overflow."
     }
   ],
   "types": [
     {
-      "name": "assetManager",
+      "name": "AssetManager",
       "type": {
         "kind": "struct",
         "fields": [
@@ -577,7 +571,7 @@ export type SoundworkBid = {
             "type": "u8"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -592,7 +586,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "bidData",
+      "name": "BidData",
       "type": {
         "kind": "struct",
         "fields": [
@@ -618,14 +612,14 @@ export type SoundworkBid = {
             "type": "pubkey"
           },
           {
-            "name": "expiryTs",
+            "name": "expiry_ts",
             "docs": [
               "unix timestamp listing expires"
             ],
             "type": "i64"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -640,7 +634,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "editBidParams",
+      "name": "EditBidParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -654,7 +648,7 @@ export type SoundworkBid = {
             }
           },
           {
-            "name": "expiryTs",
+            "name": "expiry_ts",
             "docs": [
               "expiry timestamp"
             ],
@@ -666,7 +660,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "listingData",
+      "name": "ListingData",
       "type": {
         "kind": "struct",
         "fields": [
@@ -692,25 +686,25 @@ export type SoundworkBid = {
             "type": "pubkey"
           },
           {
-            "name": "assetAddress",
+            "name": "asset_address",
             "docs": [
               "asset address"
             ],
             "type": "pubkey"
           },
           {
-            "name": "paymentOption",
+            "name": "payment_option",
             "docs": [
               "type of way user wants to get paid when listing is bought / bid made for asset"
             ],
             "type": {
               "defined": {
-                "name": "paymentOption"
+                "name": "PaymentOption"
               }
             }
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -725,7 +719,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "makeBidParams",
+      "name": "MakeBidParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -737,7 +731,7 @@ export type SoundworkBid = {
             "type": "u64"
           },
           {
-            "name": "expiryTs",
+            "name": "expiry_ts",
             "docs": [
               "expiry timestamp"
             ],
@@ -747,7 +741,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "marketPlaceConfig",
+      "name": "MarketPlaceConfig",
       "type": {
         "kind": "struct",
         "fields": [
@@ -759,21 +753,21 @@ export type SoundworkBid = {
             "type": "u8"
           },
           {
-            "name": "treasuryAddress",
+            "name": "treasury_address",
             "docs": [
               "Taker fee percentage"
             ],
             "type": "pubkey"
           },
           {
-            "name": "takerFeeBps",
+            "name": "taker_fee_bps",
             "docs": [
               "Taker fee basis points"
             ],
             "type": "u8"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -788,7 +782,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "paymentOption",
+      "name": "PaymentOption",
       "docs": [
         "When listed, how does the user want to receive funds",
         ""
@@ -797,10 +791,10 @@ export type SoundworkBid = {
         "kind": "enum",
         "variants": [
           {
-            "name": "native"
+            "name": "Native"
           },
           {
-            "name": "token",
+            "name": "Token",
             "fields": [
               {
                 "name": "mint",
@@ -812,7 +806,7 @@ export type SoundworkBid = {
       }
     },
     {
-      "name": "wallet",
+      "name": "Wallet",
       "type": {
         "kind": "struct",
         "fields": [
@@ -825,7 +819,7 @@ export type SoundworkBid = {
             "type": "u8"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "type": {
               "array": [
                 "u8",
@@ -839,14 +833,14 @@ export type SoundworkBid = {
   ],
   "constants": [
     {
-      "name": "seedBidData",
+      "name": "SEED_BID_DATA",
       "type": "bytes",
       "value": "[70, 117, 116, 97, 114, 105]"
     },
     {
-      "name": "seedPrefix",
+      "name": "SEED_PREFIX",
       "type": "bytes",
       "value": "[75, 101, 115, 115, 111, 107, 117]"
     }
   ]
-};
+}

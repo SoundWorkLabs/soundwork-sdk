@@ -12,24 +12,20 @@ import {
 } from "@solana/spl-token";
 import {
 	Connection,
-	LAMPORTS_PER_SOL,
 	PublicKey,
 	SystemProgram,
 	TransactionInstruction,
 } from "@solana/web3.js";
 
-import {
-	CORE_PROGRAM_ID,
-	SOUNDWORK_LIST_PROGRAM_ID,
-	TREASURY_ADDRESS,
-} from "../constants";
+import { CORE_PROGRAM_ID, TREASURY_ADDRESS } from "../constants";
 import {
 	findAssetManagerAddress,
 	findListingDataAddress,
 	findMarketplaceConfigAddress,
 	findWalletAddress,
 } from "../pda";
-import { IDL as soundworkIDL, SoundworkList } from "./idl/soundwork_list";
+import type { SoundworkList } from "./idl/soundwork_list";
+import * as soundworkListIDL from "./idl/soundwork_list.json";
 
 // todo (Jimii): helpers for the marker/taker fees
 
@@ -51,8 +47,7 @@ export class SoundworkListSDK {
 		this.connection = connection;
 
 		this.program = new Program<SoundworkList>(
-			soundworkIDL,
-			SOUNDWORK_LIST_PROGRAM_ID,
+			soundworkListIDL as unknown as SoundworkList,
 			provider
 		);
 	}
@@ -84,13 +79,16 @@ export class SoundworkListSDK {
 	 * List an NFT on the soundwork marketplace
 	 * @param {PublicKey} asset - the asset address.
 	 * @param {number} amount - the amount in lamports for which the user is listing the NFT.
+	 * @param {IdlTypes<SoundworkList>["PaymentOption"] } paymentOption - payment option. Native Sol or tokens.
+	 * @param {PublicKey | null } [collection] - Optional collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error creating a listing or if the response contains an error // todo
 	 */
 	public async listAsset(
 		asset: PublicKey,
 		amount: number,
-		paymentOption: IdlTypes<SoundworkList>["PaymentOption"]
+		paymentOption: IdlTypes<SoundworkList>["PaymentOption"],
+		collection: PublicKey | null = null
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
@@ -102,9 +100,10 @@ export class SoundworkListSDK {
 					amount,
 					paymentOption,
 				})
-				.accounts({
+				.accountsStrict({
 					payer: this.provider.publicKey,
 					asset,
+					collection,
 					listingData: findListingDataAddress(asset),
 					assetManager: findAssetManagerAddress(),
 					coreProgram: CORE_PROGRAM_ID,
@@ -154,11 +153,13 @@ export class SoundworkListSDK {
 	/**
 	 * Unlist a collectible from our marketplace
 	 * @param {PublicKey} asset - the asset address.
+	 * @param {PublicKey | null } [collection] - Optional collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error deleting the listing or if the response contains an error // todo
 	 */
 	public async unlistAsset(
-		asset: PublicKey
+		asset: PublicKey,
+		collection: PublicKey | null = null
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
@@ -167,9 +168,10 @@ export class SoundworkListSDK {
 		try {
 			let ix = await this.program.methods
 				.unlistAsset()
-				.accounts({
+				.accountsStrict({
 					payer: this.provider.publicKey,
 					asset,
+					collection,
 					listingData: findListingDataAddress(asset),
 					assetManager: findAssetManagerAddress(),
 					coreProgram: CORE_PROGRAM_ID,
@@ -189,13 +191,15 @@ export class SoundworkListSDK {
 	 * Buy an NFT Listed on the soundwork marketplace
 	 *
 	 * @param {PublicKey} asset - the asset address of the listed collectible.
-	 * @param {PublicKey}  [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null}  [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null } [collection] - Optional collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error purchasing the listing or if the response contains an error // todo
 	 */
 	public async buyListing(
 		asset: PublicKey,
-		mint: PublicKey | null
+		mint: PublicKey | null,
+		collection: PublicKey | null = null
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {
 			throw Error("Expected public key not found");
@@ -210,13 +214,13 @@ export class SoundworkListSDK {
 		try {
 			let ix = await this.program.methods
 				.buyAsset(null)
-				.accounts({
+				.accountsStrict({
 					payer: this.provider.publicKey,
 					buyer: this.provider.publicKey,
 					seller: listingData.authority,
 					walletAsBuyer: null,
-
 					asset,
+					collection,
 					paymentMint: mint,
 					walletTokenAccount: null,
 					buyerTokenAccount: mint
@@ -265,7 +269,7 @@ export class SoundworkListSDK {
 
 		let ix = await this.program.methods
 			.initUserEscrowWallet()
-			.accounts({
+			.accountsStrict({
 				authority: this.provider.publicKey,
 				wallet: findWalletAddress(this.provider.publicKey),
 				systemProgram: SystemProgram.programId,
@@ -288,7 +292,7 @@ export class SoundworkListSDK {
 
 		let ix = await this.program.methods
 			.depositSol(amount)
-			.accounts({
+			.accountsStrict({
 				authority: this.provider.publicKey,
 				wallet: findWalletAddress(this.provider.publicKey),
 				systemProgram: SystemProgram.programId,
@@ -311,7 +315,7 @@ export class SoundworkListSDK {
 
 		let ix = await this.program.methods
 			.withdrawSol(amount)
-			.accounts({
+			.accountsStrict({
 				payer: this.provider.publicKey,
 				authority: this.provider.publicKey,
 				wallet: findWalletAddress(this.provider.publicKey),
@@ -339,7 +343,7 @@ export class SoundworkListSDK {
 
 		let ix = await this.program.methods
 			.depositToken({ amount }) // with 6 decimals, this is 1 USDC dev coin
-			.accounts({
+			.accountsStrict({
 				authority: this.provider.publicKey,
 				wallet: findWalletAddress(this.provider.publicKey),
 				mint,
@@ -378,7 +382,7 @@ export class SoundworkListSDK {
 
 		let ix = await this.program.methods
 			.withdrawToken({ amount })
-			.accounts({
+			.accountsStrict({
 				payer: this.provider.publicKey,
 				authority: this.provider.publicKey,
 				wallet: findWalletAddress(this.provider.publicKey),
