@@ -1,6 +1,6 @@
 {
 	"name": "@soundwork-oss/soundwork-sdk",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"description": "TypeScript client for the soundwork marketplace contracts",
 	"repository": {
 		"type": "git",
