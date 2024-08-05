@@ -1,13 +1,7 @@
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/soundwork_list.json`.
- */
-export type SoundworkList = {
+{
   "address": "EA4ptgF3TYjDBGYJApAoZoyCbCYw6P5mGU5noCe1Z97",
   "metadata": {
-    "name": "soundworkList",
+    "name": "soundwork_list",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
@@ -18,7 +12,7 @@ export type SoundworkList = {
   ],
   "instructions": [
     {
-      "name": "buyAsset",
+      "name": "buy_asset",
       "docs": [
         "Buy MPL Core asset listed on our marketplace",
         ""
@@ -48,7 +42,7 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "walletAsBuyer",
+          "name": "wallet_as_buyer",
           "writable": true,
           "optional": true
         },
@@ -62,22 +56,22 @@ export type SoundworkList = {
           "optional": true
         },
         {
-          "name": "paymentMint",
+          "name": "payment_mint",
           "writable": true,
           "optional": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "buyerTokenAccount",
+          "name": "buyer_token_account",
           "writable": true,
           "optional": true
         },
         {
-          "name": "sellerTokenAccount",
+          "name": "seller_token_account",
           "writable": true,
           "optional": true,
           "pda": {
@@ -125,7 +119,7 @@ export type SoundworkList = {
               },
               {
                 "kind": "account",
-                "path": "paymentMint"
+                "path": "payment_mint"
               }
             ],
             "program": {
@@ -168,7 +162,7 @@ export type SoundworkList = {
           }
         },
         {
-          "name": "treasuryTokenAccount",
+          "name": "treasury_token_account",
           "writable": true,
           "optional": true,
           "pda": {
@@ -216,7 +210,7 @@ export type SoundworkList = {
               },
               {
                 "kind": "account",
-                "path": "paymentMint"
+                "path": "payment_mint"
               }
             ],
             "program": {
@@ -263,29 +257,29 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "assetManager"
+          "name": "asset_manager"
         },
         {
-          "name": "marketplaceConfig"
+          "name": "marketplace_config"
         },
         {
-          "name": "coreProgram",
+          "name": "core_program",
           "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -295,7 +289,7 @@ export type SoundworkList = {
           "type": {
             "option": {
               "defined": {
-                "name": "buyAssetParams"
+                "name": "BuyAssetParams"
               }
             }
           }
@@ -303,7 +297,7 @@ export type SoundworkList = {
       ]
     },
     {
-      "name": "depositSol",
+      "name": "deposit_sol",
       "docs": [
         "Deposit SOL into the user escrow wallet.",
         ""
@@ -329,7 +323,7 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -338,14 +332,14 @@ export type SoundworkList = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "depositSolParams"
+              "name": "DepositSolParams"
             }
           }
         }
       ]
     },
     {
-      "name": "depositToken",
+      "name": "deposit_token",
       "docs": [
         "Deposit SOL into the user escrow wallet.",
         ""
@@ -375,11 +369,11 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "authorityTokenAccount",
+          "name": "authority_token_account",
           "writable": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -469,15 +463,15 @@ export type SoundworkList = {
           }
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -486,14 +480,14 @@ export type SoundworkList = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "depositTokenParams"
+              "name": "DepositTokenParams"
             }
           }
         }
       ]
     },
     {
-      "name": "initEscrowAccount",
+      "name": "init_escrow_account",
       "docs": [
         "Initialize asset manager escrow account.",
         "",
@@ -518,7 +512,7 @@ export type SoundworkList = {
           "address": "4kg8oh3jdNtn7j2wcS7TrUua31AgbLzDVkBZgTAe44aF"
         },
         {
-          "name": "assetManager",
+          "name": "asset_manager",
           "writable": true,
           "pda": {
             "seeds": [
@@ -548,18 +542,18 @@ export type SoundworkList = {
           }
         },
         {
-          "name": "coreProgram",
+          "name": "core_program",
           "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "initMarketplaceConfigAccount",
+      "name": "init_marketplace_config_account",
       "docs": [
         "Initialize marketplace config account.",
         "",
@@ -584,7 +578,7 @@ export type SoundworkList = {
           "address": "4kg8oh3jdNtn7j2wcS7TrUua31AgbLzDVkBZgTAe44aF"
         },
         {
-          "name": "marketplaceConfig",
+          "name": "marketplace_config",
           "writable": true,
           "pda": {
             "seeds": [
@@ -615,7 +609,7 @@ export type SoundworkList = {
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -624,14 +618,14 @@ export type SoundworkList = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "initMarketPlaceConfigParams"
+              "name": "InitMarketPlaceConfigParams"
             }
           }
         }
       ]
     },
     {
-      "name": "initUserEscrowWallet",
+      "name": "init_user_escrow_wallet",
       "docs": [
         "Initialize user escrow wallet.",
         ""
@@ -688,14 +682,14 @@ export type SoundworkList = {
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "listAsset",
+      "name": "list_asset",
       "docs": [
         "List an MPL Core asset on Soundwork",
         ""
@@ -721,7 +715,7 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true,
           "pda": {
             "seeds": [
@@ -756,7 +750,7 @@ export type SoundworkList = {
           }
         },
         {
-          "name": "assetManager"
+          "name": "asset_manager"
         },
         {
           "name": "collection",
@@ -764,11 +758,11 @@ export type SoundworkList = {
           "optional": true
         },
         {
-          "name": "coreProgram",
+          "name": "core_program",
           "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -777,14 +771,14 @@ export type SoundworkList = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "listAssetParams"
+              "name": "ListAssetParams"
             }
           }
         }
       ]
     },
     {
-      "name": "unlistAsset",
+      "name": "unlist_asset",
       "docs": [
         "Remove MPL Core asset listed on our marketplace",
         ""
@@ -815,25 +809,25 @@ export type SoundworkList = {
           "optional": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "assetManager"
+          "name": "asset_manager"
         },
         {
-          "name": "coreProgram",
+          "name": "core_program",
           "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "updateListingAmount",
+      "name": "update_listing_amount",
       "docs": [
         "Remove MPL Core asset listed on our marketplace",
         ""
@@ -859,18 +853,18 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "listingData",
+          "name": "listing_data",
           "writable": true
         },
         {
-          "name": "assetManager"
+          "name": "asset_manager"
         },
         {
-          "name": "coreProgram",
+          "name": "core_program",
           "address": "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -879,14 +873,14 @@ export type SoundworkList = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "updateListingParams"
+              "name": "UpdateListingParams"
             }
           }
         }
       ]
     },
     {
-      "name": "withdrawSol",
+      "name": "withdraw_sol",
       "docs": [
         "Withdraw SOL into the user's escrow wallet.",
         ""
@@ -916,7 +910,7 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -926,7 +920,7 @@ export type SoundworkList = {
           "type": {
             "option": {
               "defined": {
-                "name": "withdrawSolParams"
+                "name": "WithdrawSolParams"
               }
             }
           }
@@ -934,7 +928,7 @@ export type SoundworkList = {
       ]
     },
     {
-      "name": "withdrawToken",
+      "name": "withdraw_token",
       "docs": [
         "Withdraw tokens from the user escrow wallet.",
         ""
@@ -968,23 +962,23 @@ export type SoundworkList = {
           "writable": true
         },
         {
-          "name": "authorityTokenAccount",
+          "name": "authority_token_account",
           "writable": true
         },
         {
-          "name": "walletTokenAccount",
+          "name": "wallet_token_account",
           "writable": true
         },
         {
-          "name": "tokenProgram",
+          "name": "token_program",
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -993,7 +987,7 @@ export type SoundworkList = {
           "name": "params",
           "type": {
             "defined": {
-              "name": "withdrawTokenParams"
+              "name": "WithdrawTokenParams"
             }
           }
         }
@@ -1002,7 +996,7 @@ export type SoundworkList = {
   ],
   "accounts": [
     {
-      "name": "assetManager",
+      "name": "AssetManager",
       "discriminator": [
         136,
         86,
@@ -1015,7 +1009,7 @@ export type SoundworkList = {
       ]
     },
     {
-      "name": "listingData",
+      "name": "ListingData",
       "discriminator": [
         5,
         103,
@@ -1028,7 +1022,7 @@ export type SoundworkList = {
       ]
     },
     {
-      "name": "marketPlaceConfig",
+      "name": "MarketPlaceConfig",
       "discriminator": [
         183,
         245,
@@ -1041,7 +1035,7 @@ export type SoundworkList = {
       ]
     },
     {
-      "name": "wallet",
+      "name": "Wallet",
       "discriminator": [
         24,
         89,
@@ -1057,38 +1051,38 @@ export type SoundworkList = {
   "errors": [
     {
       "code": 6000,
-      "name": "insufficientFunds",
+      "name": "InsufficientFunds",
       "msg": "Insufficient funds to purchase asset"
     },
     {
       "code": 6001,
-      "name": "invalidOperation",
+      "name": "InvalidOperation",
       "msg": "Invalid operation!"
     },
     {
       "code": 6002,
-      "name": "invalidAuthority",
+      "name": "InvalidAuthority",
       "msg": "You do no have authority to perform the requested operation!"
     },
     {
       "code": 6003,
-      "name": "zeroValueNotAllowed",
+      "name": "ZeroValueNotAllowed",
       "msg": "The value provided should not be zero."
     },
     {
       "code": 6004,
-      "name": "paymentMintAddressMismatch",
+      "name": "PaymentMintAddressMismatch",
       "msg": "The mint address provided does not match seller's provided mint address."
     },
     {
       "code": 6005,
-      "name": "missingAccount",
+      "name": "MissingAccount",
       "msg": "An account required for this operation is missing."
     }
   ],
   "types": [
     {
-      "name": "assetManager",
+      "name": "AssetManager",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1100,7 +1094,7 @@ export type SoundworkList = {
             "type": "u8"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -1115,12 +1109,12 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "buyAssetParams",
+      "name": "BuyAssetParams",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "bidAmount",
+            "name": "bid_amount",
             "docs": [
               "only used when buying using a bid amount"
             ],
@@ -1130,7 +1124,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "depositSolParams",
+      "name": "DepositSolParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1145,7 +1139,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "depositTokenParams",
+      "name": "DepositTokenParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1160,19 +1154,19 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "initMarketPlaceConfigParams",
+      "name": "InitMarketPlaceConfigParams",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "takerFeeBps",
+            "name": "taker_fee_bps",
             "docs": [
               "taker fee basis points, /100%"
             ],
             "type": "u8"
           },
           {
-            "name": "treasuryAddress",
+            "name": "treasury_address",
             "docs": [
               "treasury address"
             ],
@@ -1182,7 +1176,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "listAssetParams",
+      "name": "ListAssetParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1194,13 +1188,13 @@ export type SoundworkList = {
             "type": "u64"
           },
           {
-            "name": "paymentOption",
+            "name": "payment_option",
             "docs": [
               "which method can be used to purchase the listed asset"
             ],
             "type": {
               "defined": {
-                "name": "paymentOption"
+                "name": "PaymentOption"
               }
             }
           }
@@ -1208,7 +1202,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "listingData",
+      "name": "ListingData",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1234,25 +1228,25 @@ export type SoundworkList = {
             "type": "pubkey"
           },
           {
-            "name": "assetAddress",
+            "name": "asset_address",
             "docs": [
               "asset address"
             ],
             "type": "pubkey"
           },
           {
-            "name": "paymentOption",
+            "name": "payment_option",
             "docs": [
               "type of way user wants to get paid when listing is bought / bid made for asset"
             ],
             "type": {
               "defined": {
-                "name": "paymentOption"
+                "name": "PaymentOption"
               }
             }
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -1267,7 +1261,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "marketPlaceConfig",
+      "name": "MarketPlaceConfig",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1279,21 +1273,21 @@ export type SoundworkList = {
             "type": "u8"
           },
           {
-            "name": "treasuryAddress",
+            "name": "treasury_address",
             "docs": [
               "Taker fee percentage"
             ],
             "type": "pubkey"
           },
           {
-            "name": "takerFeeBps",
+            "name": "taker_fee_bps",
             "docs": [
               "Taker fee basis points"
             ],
             "type": "u8"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "docs": [
               "Unused reserved byte space for additive future changes."
             ],
@@ -1308,7 +1302,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "paymentOption",
+      "name": "PaymentOption",
       "docs": [
         "When listed, how does the user want to receive funds",
         ""
@@ -1317,10 +1311,10 @@ export type SoundworkList = {
         "kind": "enum",
         "variants": [
           {
-            "name": "native"
+            "name": "Native"
           },
           {
-            "name": "token",
+            "name": "Token",
             "fields": [
               {
                 "name": "mint",
@@ -1332,7 +1326,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "updateListingParams",
+      "name": "UpdateListingParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1347,7 +1341,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "wallet",
+      "name": "Wallet",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1360,7 +1354,7 @@ export type SoundworkList = {
             "type": "u8"
           },
           {
-            "name": "reserved",
+            "name": "_reserved",
             "type": {
               "array": [
                 "u8",
@@ -1372,7 +1366,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "withdrawSolParams",
+      "name": "WithdrawSolParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1387,7 +1381,7 @@ export type SoundworkList = {
       }
     },
     {
-      "name": "withdrawTokenParams",
+      "name": "WithdrawTokenParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1404,39 +1398,39 @@ export type SoundworkList = {
   ],
   "constants": [
     {
-      "name": "adminAddress",
+      "name": "ADMIN_ADDRESS",
       "type": "pubkey",
       "value": "4kg8oh3jdNtn7j2wcS7TrUua31AgbLzDVkBZgTAe44aF"
     },
     {
-      "name": "seedAssetManager",
+      "name": "SEED_ASSET_MANAGER",
       "type": "bytes",
       "value": "[83, 101, 105, 107, 97]"
     },
     {
-      "name": "seedListingData",
+      "name": "SEED_LISTING_DATA",
       "type": "bytes",
       "value": "[72, 105, 116, 111, 114, 105]"
     },
     {
-      "name": "seedMarketplaceConfig",
+      "name": "SEED_MARKETPLACE_CONFIG",
       "type": "bytes",
       "value": "[73, 106, 105, 99, 104, 105]"
     },
     {
-      "name": "seedPrefix",
+      "name": "SEED_PREFIX",
       "type": "bytes",
       "value": "[75, 101, 115, 115, 111, 107, 117]"
     },
     {
-      "name": "seedWallet",
+      "name": "SEED_WALLET",
       "type": "bytes",
       "value": "[89, 97, 109, 97, 100, 97]"
     },
     {
-      "name": "treasuryAddress",
+      "name": "TREASURY_ADDRESS",
       "type": "pubkey",
       "value": "4kg8oh3jdNtn7j2wcS7TrUua31AgbLzDVkBZgTAe44aF"
     }
   ]
-};
+}

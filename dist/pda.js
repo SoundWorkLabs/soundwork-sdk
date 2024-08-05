@@ -1,56 +1,62 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findBiddingDataAcc = exports.findUserEscrowWallet = exports.findVaultTokenAcc = exports.findAssetManagerAcc = exports.findListingDataAcc = void 0;
-const spl_token_1 = require("@solana/spl-token");
+exports.findBidDataAddress = exports.findWalletAddress = exports.findListingDataAddress = exports.findMarketplaceConfigAddress = exports.findAssetManagerAddress = void 0;
 const web3_js_1 = require("@solana/web3.js");
 const constants_1 = require("./constants");
 /**
-  * Derive the listing data account address
-  * @param {PublicKey} nftMint - the mint address of the NFT.
-  * @returns {PublicKey} The address of the derived account.
-  */
-function findListingDataAcc(nftMint) {
-    const [listingDataAcc] = web3_js_1.PublicKey.findProgramAddressSync([nftMint.toBuffer(), Buffer.from("ryo")], constants_1.SOUNDWORK_LIST_PROGRAM_ID);
-    return listingDataAcc;
-}
-exports.findListingDataAcc = findListingDataAcc;
+ * Derive the asset manager account address
+ * @returns {PublicKey} The asset Manager Address.
+ */
+const findAssetManagerAddress = () => {
+    return web3_js_1.PublicKey.findProgramAddressSync([Buffer.from(constants_1.SEED_PREFIX), Buffer.from(constants_1.ASSET_MANAGER_PREFIX)], constants_1.SOUNDWORK_LIST_PROGRAM_ID)[0];
+};
+exports.findAssetManagerAddress = findAssetManagerAddress;
 /**
-  * Derive the AssetManager address for the listing program.
-  * The AssetManager manages all tokens on the listing program.
-  * @returns {PublicKey} The address for the AssetManager.
-  */
-function findAssetManagerAcc() {
-    const [assetManager] = web3_js_1.PublicKey.findProgramAddressSync([Buffer.from("soundwork")], constants_1.SOUNDWORK_LIST_PROGRAM_ID);
-    return assetManager;
-}
-exports.findAssetManagerAcc = findAssetManagerAcc;
+ * Derive the marketplace config account
+ * @returns {PublicKey} listingData Address.
+ */
+const findMarketplaceConfigAddress = () => {
+    return web3_js_1.PublicKey.findProgramAddressSync([Buffer.from(constants_1.SEED_PREFIX), Buffer.from(constants_1.SEED_MARKETPLACE_CONFIG)], constants_1.SOUNDWORK_LIST_PROGRAM_ID)[0];
+};
+exports.findMarketplaceConfigAddress = findMarketplaceConfigAddress;
 /**
-  * Derive the ATA for the Listing program AssetManager.
-  * @param {PublicKey} nftMint - the mint of the token.
-  * @returns {PublicKey} The Associated Token Address for the nft.
-  */
-function findVaultTokenAcc(nftMint, assetManager) {
-    let vaultTokenAccount = (0, spl_token_1.getAssociatedTokenAddressSync)(nftMint, assetManager, true);
-    return vaultTokenAccount;
-}
-exports.findVaultTokenAcc = findVaultTokenAcc;
+ * Derive the listing data account address
+ * @param asset Asset address
+ * @returns {PublicKey} listingData Address.
+ */
+const findListingDataAddress = (asset) => {
+    return web3_js_1.PublicKey.findProgramAddressSync([
+        Buffer.from(constants_1.SEED_PREFIX),
+        Buffer.from(constants_1.SEED_LISTING_DATA),
+        asset.toBuffer(),
+    ], constants_1.SOUNDWORK_LIST_PROGRAM_ID)[0];
+};
+exports.findListingDataAddress = findListingDataAddress;
 /**
-  * Derive the SOL escrow address.
-  * @param {PublicKey} address - the address for which the listing address is to be derived.
-  * @returns {PublicKey} The address of the derived escrow.
-  */
-function findUserEscrowWallet(address) {
-    const [userEscrowWaller] = web3_js_1.PublicKey.findProgramAddressSync([address.toBuffer(), Buffer.from("Hitori")], constants_1.SOUNDWORK_LIST_PROGRAM_ID);
-    return userEscrowWaller;
-}
-exports.findUserEscrowWallet = findUserEscrowWallet;
+ * Derive the user wallet escrow address
+ * @param authority user's address
+ * @returns {PublicKey} listingData Address.
+ */
+const findWalletAddress = (authority) => {
+    return web3_js_1.PublicKey.findProgramAddressSync([
+        Buffer.from(constants_1.SEED_PREFIX),
+        Buffer.from(constants_1.SEED_WALLET),
+        authority.toBuffer(),
+    ], constants_1.SOUNDWORK_LIST_PROGRAM_ID)[0];
+};
+exports.findWalletAddress = findWalletAddress;
 /**
-  * Derive the bidding data account address
-  * @param {PublicKey} nftMint - the mint address of the NFT.
-  * @returns {PublicKey} The address of the derived account.
-  */
-function findBiddingDataAcc(nftMint) {
-    const [biddingDataAcc] = web3_js_1.PublicKey.findProgramAddressSync([nftMint.toBuffer(), Buffer.from("Ikuyo")], constants_1.SOUNDWORK_BID_PROGRAM_ID);
-    return biddingDataAcc;
-}
-exports.findBiddingDataAcc = findBiddingDataAcc;
+ * Derive the bid data account address
+ *
+ * @param asset asset's address
+ *
+ * @returns {PublicKey} The bid data Address.
+ */
+const findBidDataAddress = (asset) => {
+    return web3_js_1.PublicKey.findProgramAddressSync([
+        Buffer.from(constants_1.SEED_PREFIX),
+        Buffer.from(constants_1.SEED_BID_DATA),
+        asset.toBuffer(),
+    ], constants_1.SOUNDWORK_BID_PROGRAM_ID)[0];
+};
+exports.findBidDataAddress = findBidDataAddress;

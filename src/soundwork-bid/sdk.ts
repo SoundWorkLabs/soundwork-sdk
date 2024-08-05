@@ -1,25 +1,31 @@
-import { Connection, TransactionInstruction } from "@solana/web3.js";
-import { Program, Provider, BN, IdlAccounts } from "@coral-xyz/anchor";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { BN, IdlAccounts, Program, Provider } from "@coral-xyz/anchor";
 import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import {
+	ASSOCIATED_TOKEN_PROGRAM_ID,
 	getAssociatedTokenAddressSync,
 	TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-
-import { SoundworkBid } from "./idl/soundwork_bid";
-import { IDL as soundworkIDL } from "./idl/soundwork_bid";
 import {
-	SOUNDWORK_BID_PROGRAM_ID,
+	Connection,
+	PublicKey,
+	SystemProgram,
+	TransactionInstruction,
+} from "@solana/web3.js";
+
+import {
+	CORE_PROGRAM_ID,
 	SOUNDWORK_LIST_PROGRAM_ID,
+	TREASURY_ADDRESS,
 } from "../constants";
 import {
-	findAssetManagerAcc,
-	findBiddingDataAcc,
-	findListingDataAcc,
-	findUserEscrowWallet,
-	findVaultTokenAcc,
+	findAssetManagerAddress,
+	findBidDataAddress,
+	findListingDataAddress,
+	findMarketplaceConfigAddress,
+	findWalletAddress,
 } from "../pda";
+import type { SoundworkBid } from "./idl/soundwork_bid";
+import * as soundworkBidIDL from "./idl/soundwork_bid.json";
 
 /**
  * This is the base level class for interfacing with the Soundwork bidding contract.
@@ -52,27 +58,26 @@ export class SoundworkBidSDK {
 		this.sellerProvider = sellerProvider;
 
 		this.program = new Program<SoundworkBid>(
-			soundworkIDL,
-			SOUNDWORK_BID_PROGRAM_ID,
+			soundworkBidIDL as unknown as SoundworkBid,
 			bidderProvider
 		);
 	}
 
 	// --------------------------------------- fetchers
 	/**
-	 * Fetch bidding data for an NFT using the mint
-	 * @param {PublicKey} mint - the mint address of the nft
-	 * @returns {Promise<IdlAccounts<SoundworkBid>["biddingDataV1"]>} a promise that resolves with the data inside the biddingDataV1 account
+	 * Fetch bidding data for an asset
+	 * @param {PublicKey} asset - the asset address of the collectible.
+	 * @returns {Promise<IdlAccounts<SoundworkBid>[""]>} a promise that resolves with the data inside the biddingDataV1 account
 	 * @throws {Error} throws error if mint has not bids placed on it
 	 */
-	async fetchBidDataByMint(
-		mint: PublicKey
-	): Promise<IdlAccounts<SoundworkBid>["biddingDataV1"]> {
+	async fetchBidDataByAddress(
+		asset: PublicKey
+	): Promise<IdlAccounts<SoundworkBid>["bidData"]> {
 		try {
-			const biddingDataAcc = findBiddingDataAcc(mint);
+			const bidDataAddress = findBidDataAddress(asset);
 
-			let listingData: IdlAccounts<SoundworkBid>["biddingDataV1"] =
-				await this.program.account.biddingDataV1.fetch(biddingDataAcc);
+			let listingData: IdlAccounts<SoundworkBid>["bidData"] =
+				await this.program.account.bidData.fetch(bidDataAddress);
 
 			return listingData;
 		} catch (err) {
@@ -83,37 +88,62 @@ export class SoundworkBidSDK {
 	// --------------------------------------- bidding calls
 	/**
 	 * Place a bid for an NFT listed on Soundwork.
-	 * @param {PublicKey} mint - the mint address of the NFT.
-	 * @param {BN} lamports - the amount of lamports for which you'd like to purchase the NFT.
-	 * @param {BN} expire_ts - unix timestamp of when the bid expires.
+	 *
+	 * @param {PublicKey} address - the mint address of the NFT.
+	 * @param {BN} amount - the amount in lamports for which you'd like to purchase the NFT.
+	 * @param {BN} expiryTs - unix timestamp of when the bid expires.
+	 * @param {PublicKey} [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if bidding is unsuccessful.
+	 *
 	 * ## possible errors
-	 * - That the amount you are placing for the bid is higher than the listing price of owner.
-	 * - You don't have enough funds that can be transferred to owner if bid is accepted.
+	 * - the user's escrow wallet isn't initialized.
+	 * - You don't have enough funds to place bid.
 	 */
-	async placeBid(mint: PublicKey, lamports: BN, expire_ts: BN) {
+	async placeBid(
+		asset: PublicKey,
+		amount: BN,
+		expiryTs: BN,
+		mint: PublicKey | null
+	) {
 		if (!this.bidderProvider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const biddingDataAcc = findBiddingDataAcc(mint);
-		const listingDataAcc = findListingDataAcc(mint);
-		let solEscrowWallet = findUserEscrowWallet(
+		const escrowWalletAddress = findWalletAddress(
 			this.bidderProvider.publicKey
 		);
 
 		try {
 			let ix = await this.program.methods
-				.makeBid(lamports, expire_ts)
-				.accounts({
+				.makeBid({
+					amount,
+					expiryTs,
+				})
+				.accountsStrict({
 					bidder: this.bidderProvider.publicKey,
-					mint,
-					biddingDataAcc,
-					listingDataAcc,
-					solEscrowWallet,
+					asset,
+					bidData: findBidDataAddress(asset),
+					bidderEscrowWallet: escrowWalletAddress,
+					listingData: findListingDataAddress(asset),
+					paymentMint: mint,
+					bidderTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								this.bidderProvider.publicKey
+						  )
+						: null,
+					walletTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								escrowWalletAddress,
+								true
+						  )
+						: null,
 					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
+					associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
+					tokenProgram: TOKEN_PROGRAM_ID,
 				})
 				.instruction();
 
@@ -125,34 +155,53 @@ export class SoundworkBidSDK {
 
 	/**
 	 * Edit a placed bid.
-	 * @param {PublicKey} mint - the mint address of the NFT.
-	 * @param {BN} lamports - update price of the bid.
-	 * @param {BN | null} expires_ts - new unix timestamp of when the bid expires.
+	 * @param {PublicKey} asset - the asset address of the collectible.
+	 * @param {BN} amount - update price of the bid.
+	 * @param {BN | null} expiryTs - new unix timestamp of when the bid expires.
+	 * @param {PublicKey} [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if unsuccessful.
 	 */
 	async editBid(
-		mint: PublicKey,
-		lamports: BN | null,
-		expires_ts: BN | null
+		asset: PublicKey,
+		amount: BN | null,
+		expiryTs: BN | null,
+		mint: PublicKey | null
 	): Promise<TransactionInstruction> {
 		if (!this.bidderProvider.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const biddingDataAcc = findBiddingDataAcc(mint);
-		let solEscrowWallet = findUserEscrowWallet(
+		let escrowWalletAddress = findWalletAddress(
 			this.bidderProvider.publicKey
 		);
 
 		try {
 			let ix = await this.program.methods
-				.editBid(expires_ts, lamports)
-				.accounts({
+				.editBid({ amount, expiryTs })
+				.accountsStrict({
 					bidder: this.bidderProvider.publicKey,
-					biddingDataAcc,
-					solEscrowWallet,
+					asset,
+					bidData: findBidDataAddress(asset),
+					bidderEscrowWallet: escrowWalletAddress,
+					listingData: findListingDataAddress(asset),
+					paymentMint: mint,
+					bidderTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								this.bidderProvider.publicKey
+						  )
+						: null,
+					walletTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								escrowWalletAddress,
+								true
+						  )
+						: null,
 					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
+					tokenProgram: TOKEN_PROGRAM_ID,
+					associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
 				})
 				.instruction();
@@ -165,41 +214,63 @@ export class SoundworkBidSDK {
 
 	/**
 	 * Owner Accepts a bid. This transfers the NFT to bidder and the escrowed funds to the NFT lister.
-	 * @param {PublicKey} mint - the mint address of the NFT.
+	 *
+	 * @param {PublicKey} asset - the address of the asset.
+	 * @param {PublicKey | null} [mint] - Optional. Only passed it when payment is in SPL tokens.
+	 * @param {PublicKey | null} [collection] - Optional. collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if unsuccessful.
 	 */
-	async acceptBid(mint: PublicKey): Promise<TransactionInstruction> {
+	async acceptBid(
+		asset: PublicKey,
+		mint: PublicKey | null,
+		collection: PublicKey | null = null
+	): Promise<TransactionInstruction> {
 		if (!this.sellerProvider?.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const listingDataAcc = findListingDataAcc(mint);
-		const biddingDataAcc = findBiddingDataAcc(mint);
-		const assetManager = findAssetManagerAcc();
-		const vaultTokenAccount = findVaultTokenAcc(mint, assetManager);
-
-		const buyer = await (await this.fetchBidDataByMint(mint)).owner; // this can fail(network issues)
-		let buyerTokenAcc = getAssociatedTokenAddressSync(mint, buyer);
-		let buyerSolEscrow = findUserEscrowWallet(buyer);
+		const seller = this.sellerProvider.publicKey;
+		const bidder = await (
+			await this.fetchBidDataByAddress(asset)
+		).authority; // this can fail(network issues)
 
 		try {
 			let ix = await this.program.methods
 				.acceptBid()
-				.accounts({
-					seller: this.sellerProvider.publicKey,
-					listingDataAcc,
-					biddingDataAcc,
-					buyer,
-					mint,
-					buyerSolEscrow,
-					buyerTokenAcc,
-					assetManager,
-					vaultTokenAcc: vaultTokenAccount,
+				.accountsStrict({
+					seller,
+					bidder,
+					asset,
+					bidData: findBidDataAddress(asset),
+					bidderEscrowWallet: findWalletAddress(bidder),
+					listingData: findListingDataAddress(asset),
+					paymentMint: mint,
+					bidderTokenAccount: mint
+						? getAssociatedTokenAddressSync(mint, bidder)
+						: null,
+					sellerTokenAccount: mint
+						? getAssociatedTokenAddressSync(mint, seller)
+						: null,
+					walletTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								findWalletAddress(bidder),
+								true
+						  )
+						: null,
+					treasuryTokenAccount: mint
+						? getAssociatedTokenAddressSync(mint, TREASURY_ADDRESS)
+						: null,
+					treasury: TREASURY_ADDRESS,
+					assetManager: findAssetManagerAddress(),
+					marketplaceConfig: findMarketplaceConfigAddress(),
 					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
+					coreProgram: CORE_PROGRAM_ID,
 					tokenProgram: TOKEN_PROGRAM_ID,
 					associatedTokenProgram: ASSOCIATED_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
+					collection,
 				})
 				.instruction();
 
@@ -211,31 +282,45 @@ export class SoundworkBidSDK {
 
 	/**
 	 * Reject a bid from a bidder.
-	 * @param {PublicKey} mint - the mint address of the NFT.
+	 * @param {PublicKey} asset - the asset address of the collectible.
+	 * @param {PublicKey | null} [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if  unsuccessful.
 	 */
-	async rejectBid(mint: PublicKey): Promise<TransactionInstruction> {
+	async rejectBid(
+		asset: PublicKey,
+		mint: PublicKey | null
+	): Promise<TransactionInstruction> {
 		if (!this.sellerProvider?.publicKey) {
 			throw Error("Expected public key not found");
 		}
 
-		const biddingDataAcc = findBiddingDataAcc(mint);
-		const listingDataAcc = findListingDataAcc(mint);
-
-		const bidData = await this.fetchBidDataByMint(mint); // ! this can fail(network issues)
-		const buyerSolEscrow = findUserEscrowWallet(bidData.owner);
+		const bidData = await this.fetchBidDataByAddress(asset); // this can fail(network issues)
 
 		try {
 			let ix = await this.program.methods
 				.rejectBid()
-				.accounts({
+				.accountsStrict({
 					seller: this.sellerProvider.publicKey,
-					listingDataAcc,
-					buyer: bidData.owner,
-					buyerSolEscrow,
-					biddingDataAcc,
+					bidder: bidData.authority,
+					asset,
+					bidData: findBidDataAddress(asset),
+					bidderEscrowWallet: findWalletAddress(bidData.authority),
+					listingData: findListingDataAddress(asset),
+					paymentMint: mint,
+					bidderTokenAccount: mint
+						? getAssociatedTokenAddressSync(mint, bidData.authority)
+						: null,
+					walletTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								findWalletAddress(bidData.authority),
+								true
+						  )
+						: null,
 					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
+					tokenProgram: TOKEN_PROGRAM_ID,
+					associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
 				})
 				.instruction();
@@ -247,25 +332,46 @@ export class SoundworkBidSDK {
 	}
 
 	/**
-	 * Delete a bid for an NFT.
-	 * @param {PublicKey} mint - the mint address of the NFT.
+	 * Revoke bid placed on a core asset.
+	 *
+	 * @param {PublicKey} asset - the asset address of the collectible.
+	 * @param {PublicKey | null} [mint] - Optional. Only passed it when payment is in SPL tokens.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} Throws an Error if unsuccessful.
 	 */
-	async deleteBid(mint: PublicKey): Promise<TransactionInstruction> {
-		const biddingDataAcc = findBiddingDataAcc(mint);
+	async revokeBid(
+		asset: PublicKey,
+		mint: PublicKey | null
+	): Promise<TransactionInstruction> {
+		if (!this.bidderProvider?.publicKey) {
+			throw Error("Expected public key not found");
+		}
 
-		const bidData = await this.fetchBidDataByMint(mint); // ! this can fail(network issues)
-		const solEscrowWallet = findUserEscrowWallet(bidData.owner);
+		let bidder = this.bidderProvider.publicKey;
 
 		try {
 			let ix = await this.program.methods
-				.deleteBid()
-				.accounts({
-					bidder: this.bidderProvider.publicKey,
-					biddingDataAcc,
-					solEscrowWallet,
+				.revokeBid()
+				.accountsStrict({
+					bidder,
+					asset,
+					bidData: findBidDataAddress(asset),
+					bidderEscrowWallet: findWalletAddress(bidder),
+					listingData: findListingDataAddress(asset),
+					paymentMint: mint,
+					bidderTokenAccount: mint
+						? getAssociatedTokenAddressSync(mint, bidder)
+						: null,
+					walletTokenAccount: mint
+						? getAssociatedTokenAddressSync(
+								mint,
+								findWalletAddress(bidder),
+								true
+						  )
+						: null,
 					soundworkList: SOUNDWORK_LIST_PROGRAM_ID,
+					tokenProgram: TOKEN_PROGRAM_ID,
+					associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 					systemProgram: SystemProgram.programId,
 				})
 				.instruction();
