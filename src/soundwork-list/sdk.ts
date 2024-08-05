@@ -79,7 +79,7 @@ export class SoundworkListSDK {
 	 * List an NFT on the soundwork marketplace
 	 * @param {PublicKey} asset - the asset address.
 	 * @param {number} amount - the amount in lamports for which the user is listing the NFT.
-	 * @param {IdlTypes<SoundworkList>["PaymentOption"] } paymentOption - payment option. Native Sol or tokens.
+	 * @param {IdlTypes<SoundworkList>["paymentOption"] } paymentOption - payment option. Native Sol or tokens.
 	 * @param {PublicKey | null } [collection] - Optional collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} if there is an error creating a listing or if the response contains an error // todo
@@ -87,7 +87,7 @@ export class SoundworkListSDK {
 	public async listAsset(
 		asset: PublicKey,
 		amount: number,
-		paymentOption: IdlTypes<SoundworkList>["PaymentOption"],
+		paymentOption: IdlTypes<SoundworkList>["paymentOption"],
 		collection: PublicKey | null = null
 	): Promise<TransactionInstruction> {
 		if (!this.provider.publicKey) {

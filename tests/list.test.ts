@@ -25,10 +25,11 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 	let listSDK: SoundworkListSDK;
 
 	describe("SELLER TESTS", () => {
-		// let provider = setSellerProvider();
-		// beforeAll(() => {
-		// 	listSDK = new SoundworkListSDK(provider, connection);
-		// });
+		let provider = setSellerProvider();
+		beforeAll(() => {
+			listSDK = new SoundworkListSDK(provider, connection);
+		});
+
 		// it("should fail fetching listed NFT data for an account that does not exist", async () => {
 		// 	try {
 		// 		let nonExistentMint = new PublicKey(
@@ -39,11 +40,9 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 	} catch (error: any) {
 		// 		console.log("error trying to fetch non existent account: ", error);
 		// 		expect(error).toBeInstanceOf(Error);
-		// 		// expect(error.message).toBe(
-		// 		// 	"error during create Listing: Error: Account does not exist or has no data 8woQMNqkTEF8pvHBaEyzMfWEcsAN3vBUYrak2G4bp3ca"
-		// 		// );
 		// 	}
 		// }, 60000);
+
 		// it("should create a listing with SPL Token", async () => {
 		// 	// one bonk
 		// let ix = await listSDK.listAsset(asset, new BN(1_000_000_000), {
@@ -61,6 +60,7 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 	);
 		// 	await sleep(4000); // Delay
 		// }, 60000);
+
 		// 		// it('should edit a listing', async () => {
 		// 		// 	await sleep(4000); // Delay
 		// 		// 	let ix = await listSDK.editListing(nftMint, 20);
@@ -71,6 +71,7 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 		// 		`edit listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
 		// 		// 	);
 		// 		// }, 60000);
+
 		// it("unlist listed asset and close listing data account", async () => {
 		// 	await sleep(4000); // Delay
 		// 	let ix = await listSDK.unlistAsset(asset);

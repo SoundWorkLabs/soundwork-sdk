@@ -59,7 +59,7 @@ export const nftMint = new PublicKey(
 );
 
 export const asset = new PublicKey(
-	"2BhD3BpFCeeEmY4KnzhwjUmZbd6MycNB1BgfngDuAmvg"
+	"BLBymXS7qxcsL9qESyfv82Q4DKSAfCtNnna7TBEqKmj6"
 );
 
 export const BONK_DEV_MINT = new PublicKey(
