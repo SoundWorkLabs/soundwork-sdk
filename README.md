@@ -9,7 +9,7 @@
   <p>
     <a target="_blank" href="https://discord.gg/Jyw67UfQ"><img alt="Discord Chat" src="https://img.shields.io/badge/chat-discord-blueviolet" /></a>
     <a target="_blank" href="https://github.com/SoundWorkLabs//blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/SoundWorkLabs/market-contracts" /></a>
-    <a target="_blank" href="https://www.npmjs.com/package/@jimii/soundwork-sdk"><img alt="SDK" src="https://img.shields.io/npm/v/%40jimii%2Fsoundwork-sdk"/></a>
+    <a target="_blank" href="https://www.npmjs.com/package/@soundwork-oss/soundwork-sdk"><img alt="SDK" src="https://img.shields.io/npm/v/%40soundwork-oss%2Fsoundwork-sdk"/></a>
   </p>
 </div>
 
