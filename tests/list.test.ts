@@ -25,11 +25,10 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 	let listSDK: SoundworkListSDK;
 
 	describe("SELLER TESTS", () => {
-		let provider = setSellerProvider();
-		beforeAll(() => {
-			listSDK = new SoundworkListSDK(provider, connection);
-		});
-
+		// let provider = setSellerProvider();
+		// beforeAll(() => {
+		// 	listSDK = new SoundworkListSDK(provider, connection);
+		// });
 		// it("should fail fetching listed NFT data for an account that does not exist", async () => {
 		// 	try {
 		// 		let nonExistentMint = new PublicKey(
@@ -42,12 +41,11 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 		expect(error).toBeInstanceOf(Error);
 		// 	}
 		// }, 60000);
-
 		// it("should create a listing with SPL Token", async () => {
 		// 	// one bonk
-		// let ix = await listSDK.listAsset(asset, new BN(1_000_000_000), {
-		// 	token: { mint: BONK_DEV_MINT },
-		// });
+		// 	let ix = await listSDK.listAsset(asset, new BN(1_000_000_000), {
+		// 		token: { mint: BONK_DEV_MINT },
+		// 	});
 		// 	let tx = new Transaction().add(ix);
 		// 	let txSig = await sendAndConfirmTransaction(
 		// 		provider.connection,
@@ -60,7 +58,6 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 	);
 		// 	await sleep(4000); // Delay
 		// }, 60000);
-
 		// 		// it('should edit a listing', async () => {
 		// 		// 	await sleep(4000); // Delay
 		// 		// 	let ix = await listSDK.editListing(nftMint, 20);
@@ -71,7 +68,6 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// 		// 		`edit listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
 		// 		// 	);
 		// 		// }, 60000);
-
 		// it("unlist listed asset and close listing data account", async () => {
 		// 	await sleep(4000); // Delay
 		// 	let ix = await listSDK.unlistAsset(asset);
@@ -88,58 +84,58 @@ describe("SOUNDWORK LIST SDK TEST", () => {
 		// }, 60000);
 	});
 
-	// describe("BUYER TESTS", () => {
-	// 	let provider = setBuyerProvider();
+	describe("BUYER TESTS", () => {
+		let provider = setBuyerProvider();
 
-	// 	beforeAll(() => {
-	// 		listSDK = new SoundworkListSDK(provider, connection);
-	// 	});
+		beforeAll(() => {
+			listSDK = new SoundworkListSDK(provider, connection);
+		});
 
-	// 	it("buy a listed NFT and close listing data account", async () => {
-	// 		await sleep(4000); // Delay
-	// 		// let ix = await listSDK.buyListing(asset, null); // when using native sol to pay
-	// 		let ix = await listSDK.buyListing(asset, BONK_DEV_MINT);
+		it("buy a listed NFT and close listing data account", async () => {
+			await sleep(4000); // Delay
+			// let ix = await listSDK.buyListing(asset, null); // when using native sol to pay
+			let ix = await listSDK.buyListing(asset, BONK_DEV_MINT, null);
 
-	// 		let tx = new Transaction().add(ix);
-	// 		let txSig = await sendAndConfirmTransaction(
-	// 			provider.connection,
-	// 			tx,
-	// 			[buyerKeypair]
-	// 		);
-	// 		expect(txSig).toBeDefined();
-	// 		console.log(
-	// 			`buy listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-	// 		);
-	// 	}, 60000);
-	// });
+			let tx = new Transaction().add(ix);
+			let txSig = await sendAndConfirmTransaction(
+				provider.connection,
+				tx,
+				[buyerKeypair],
+				{ skipPreflight: true }
+			);
+			expect(txSig).toBeDefined();
+			console.log(
+				`buy listing tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+			);
+		}, 60000);
 
-	// describe("WITHDRAW && DEPOSIT TESTS", () => {
-	// 	let provider = setBuyerProvider();
+		// describe("WITHDRAW && DEPOSIT TESTS", () => {
+		// 	let provider = setBuyerProvider();
 
-	// 	beforeAll(() => {
-	// 		listSDK = new SoundworkListSDK(provider, connection);
-	// 	});
+		// 	beforeAll(() => {
+		// 		listSDK = new SoundworkListSDK(provider, connection);
+		// 	});
 
-	// 	it('deposit sol ino the escrowed account', async () => {
-	// 		await sleep(4000); // Delay
-	// 		let ix = await listSDK.depositSol(new BN(2 * LAMPORTS_PER_SOL));
-	// 		let tx = new Transaction().add(ix);
-	// 		let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
-	// 		expect(txSig).toBeDefined();
-	// 		console.log(
-	// 			`deposit SOL tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-	// 		);
-	// 	}, 60000);
+		// 	it('deposit sol ino the escrowed account', async () => {
+		// 		await sleep(4000); // Delay
+		// 		let ix = await listSDK.depositSol(new BN(2 * LAMPORTS_PER_SOL));
+		// 		let tx = new Transaction().add(ix);
+		// 		let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
+		// 		expect(txSig).toBeDefined();
+		// 		console.log(
+		// 			`deposit SOL tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// 		);
+		// 	}, 60000);
 
-	// 	it('withdraw sol from the escrowed account', async () => {
-	// 		await sleep(4000); // Delay
-	// 		let ix = await listSDK.withDrawSol(new BN(2 * LAMPORTS_PER_SOL));
-	// 		let tx = new Transaction().add(ix);
-	// 		let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
-	// 		expect(txSig).toBeDefined();
-	// 		console.log(
-	// 			`withdraw SOL tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
-	// 		);
-	// 	}, 60000);
-	// });
+		// 	it('withdraw sol from the escrowed account', async () => {
+		// 		await sleep(4000); // Delay
+		// 		let ix = await listSDK.withDrawSol(new BN(2 * LAMPORTS_PER_SOL));
+		// 		let tx = new Transaction().add(ix);
+		// 		let txSig = await sendAndConfirmTransaction(provider.connection, tx, [buyerKeypair])
+		// 		expect(txSig).toBeDefined();
+		// 		console.log(
+		// 			`withdraw SOL tx: https://explorer.solana.com/tx/${txSig}?cluster=devnet`
+		// 		);
+		// 	}, 60000);
+	});
 });
