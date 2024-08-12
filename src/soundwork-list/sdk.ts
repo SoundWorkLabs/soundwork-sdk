@@ -76,14 +76,15 @@ export class SoundworkListSDK {
 	}
 
 	/**
+	 *
 	 * Fetch user escrow wallet
 	 *
-	 * @returns {Promise<IdlAccounts<SoundworkList>["wallet"]>} a promise that resolves to the data inside the listingDataV1 account
-	 * @throws {Error} if there is an error fetching the details or if the response contains an error
+	 * @param {PublicKey} authority - authority wallet address
+	 * @returns {Promise<IdlAccounts<SoundworkList>["wallet"]>} a promise that resolves to the wallet data or null
 	 */
 	async fetchUserEscrowWallet(
 		authority: PublicKey
-	): Promise<IdlAccounts<SoundworkList>["wallet"]> {
+	): Promise<IdlAccounts<SoundworkList>["wallet"] | null> {
 		try {
 			const walletAddress = findWalletAddress(authority);
 
@@ -92,7 +93,7 @@ export class SoundworkListSDK {
 
 			return walletData;
 		} catch (err) {
-			throw new Error(`error fetching listing data: ${err}`);
+			return null;
 		}
 	}
 
