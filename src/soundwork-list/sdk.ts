@@ -55,6 +55,7 @@ export class SoundworkListSDK {
 	// --------------------------------------- fetchers
 	/**
 	 * Fetch data about a listed collectible on the soundwork Marketplace
+	 *
 	 * @param {PublicKey} asset - the address of the collectible
 	 * @returns {Promise<IdlAccounts<SoundworkList>["listingData"]>} a promise that resolves to the data inside the listingDataV1 account
 	 * @throws {Error} if there is an error fetching the details or if the response contains an error
@@ -74,9 +75,32 @@ export class SoundworkListSDK {
 		}
 	}
 
+	/**
+	 *
+	 * Fetch user escrow wallet
+	 *
+	 * @param {PublicKey} authority - authority wallet address
+	 * @returns {Promise<IdlAccounts<SoundworkList>["wallet"]>} a promise that resolves to the wallet data or null
+	 */
+	async fetchUserEscrowWallet(
+		authority: PublicKey
+	): Promise<IdlAccounts<SoundworkList>["wallet"] | null> {
+		try {
+			const walletAddress = findWalletAddress(authority);
+
+			let walletData: IdlAccounts<SoundworkList>["wallet"] =
+				await this.program.account.wallet.fetch(walletAddress);
+
+			return walletData;
+		} catch (err) {
+			return null;
+		}
+	}
+
 	// --------------------------------------- listing calls
 	/**
 	 * List an NFT on the soundwork marketplace
+	 *
 	 * @param {PublicKey} asset - the asset address.
 	 * @param {number} amount - the amount in lamports for which the user is listing the NFT.
 	 * @param {IdlTypes<SoundworkList>["paymentOption"] } paymentOption - payment option. Native Sol or tokens.
@@ -152,6 +176,7 @@ export class SoundworkListSDK {
 
 	/**
 	 * Unlist a collectible from our marketplace
+	 *
 	 * @param {PublicKey} asset - the asset address.
 	 * @param {PublicKey | null } [collection] - Optional collection address.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
@@ -259,6 +284,7 @@ export class SoundworkListSDK {
 
 	/**
 	 * Initialize user's Escrow wallet owned by soundwork list program.
+	 *
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} throw an error if we encounter a failure
 	 */
@@ -281,6 +307,7 @@ export class SoundworkListSDK {
 
 	/**
 	 * Deposit SOL into  user's Escrow wallet owned by soundwork list program.
+	 *
 	 * @param {BN} amount - the amount in lamports you are depositing into the escrow.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} throw an error if we encounter a failure
@@ -304,6 +331,7 @@ export class SoundworkListSDK {
 
 	/**
 	 * Withdraw SOL into  user's Escrow wallet owned by soundwork list program.
+	 *
 	 * @param {BN} amount - the amount in lamports you'd like to withdraw from the escrow.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
 	 * @throws {Error} throw an error if we encounter a failure
@@ -328,6 +356,7 @@ export class SoundworkListSDK {
 
 	/**
 	 * Deposits a specific SPL token (e.g., USDC) into  user's Escrow wallet.
+	 *
 	 * @param {BN} amount - the amount of tokens you are depositing into the escrow.
 	 * @param {PublicKey}  mint - the SPL token mint address user wants to deposit.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
@@ -367,6 +396,7 @@ export class SoundworkListSDK {
 
 	/**
 	 * Withdraws a specific SPL token (e.g., USDC) from the user's Escrow wallet.
+	 *
 	 * @param {BN} amount - the amount of tokens you are depositing into the escrow.
 	 * @param {PublicKey}  mint - the SPL token mint address user wants to deposit.
 	 * @returns {Promise<TransactionInstruction>} a promise that resolves to a web3.js Instruction.
